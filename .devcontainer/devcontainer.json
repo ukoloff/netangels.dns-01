@@ -12,6 +12,7 @@
       "lego"
     ]
   },
+  "shutdownAction": "none",
   "postCreateCommand": {
     "clone": [
       "git",
