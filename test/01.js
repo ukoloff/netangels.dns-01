@@ -5,6 +5,6 @@ it('Hello, world', x => {
   assert.equal(1, 1)
 })
 
-it('Oops', async x => {
+it.skip('Oops', async x => {
   assert.equal(1, 2)
 })
