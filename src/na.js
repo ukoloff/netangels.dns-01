@@ -3,7 +3,9 @@
 //
 const AUTH = "https://panel.netangels.ru/api/gateway/token/"
 
-export async function auth(key = process.env.NETANGELS_API_KEY) {
+const auth = doAuth()
+
+export async function doAuth(key = process.env.NETANGELS_API_KEY) {
   let params = new FormData()
   params.append('api_key', key)
   let auth = await fetch(AUTH, {

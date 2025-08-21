@@ -3,12 +3,10 @@ import { Resolver } from 'node:dns/promises'
 
 let _dns = resolver()
 
-it('Test DNS', async _=>{
+it('Test DNS', async _ => {
   let dns = await _dns
   let IPs = await dns.resolve('ekb.ru')
-  console.log(IPs)
 })
-
 
 async function resolver(domain = 'ekb.ru') {
   const dns = new Resolver()
