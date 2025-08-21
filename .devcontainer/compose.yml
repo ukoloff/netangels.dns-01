@@ -1,0 +1,15 @@
+name: na01
+
+services:
+  dev:
+    image: node:lts-alpine
+    working_dir: /repo
+    volumes:
+      - repo:/repo
+    command:
+      - sleep
+      - infinity
+    stop_signal: SIGKILL
+
+volumes:
+  repo:

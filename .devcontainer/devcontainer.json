@@ -1,0 +1,30 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+{
+  "name": "na01",
+  "dockerComposeFile": "compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/repo",
+  "onCreateCommand": {
+    "apk": [
+      "apk",
+      "add",
+      "git"
+    ]
+  },
+  "postCreateCommand": {
+    "clone": [
+      "git",
+      "clone",
+      "https://github.com/ukoloff/netangels.dns-01",
+      "."
+    ]
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "mhutchie.git-graph",
+        "EditorConfig.EditorConfig"
+      ]
+    }
+  }
+}
