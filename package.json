@@ -1,0 +1,22 @@
+{
+  "name": "netangels.dns-01",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DNS challenge via NetAngels.ru for go-acme/lego",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ukoloff/netangels.dns-01.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/ukoloff/netangels.dns-01/issues"
+  },
+  "homepage": "https://github.com/ukoloff/netangels.dns-01#readme"
+}
