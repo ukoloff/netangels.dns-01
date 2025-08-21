@@ -10,6 +10,8 @@ services:
       - sleep
       - infinity
     stop_signal: SIGKILL
+    env_file:
+      - .env
 
 volumes:
   repo:

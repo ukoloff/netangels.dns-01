@@ -1,6 +1,12 @@
 # netangels.dns-01
 DNS challenge via NetAngels.ru for go-acme/lego
 
+# .env
+```.env
+# .devcontainer\.env
+NETANGELS_API_KEY=XXX
+```
+
 ## See also
 + [NetAngels]
 + [go-acme/lego]
