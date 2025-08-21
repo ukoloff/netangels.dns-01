@@ -1,7 +1,7 @@
 import { it, describe } from 'node:test'
 import assert from 'node:assert'
 import { doAuth, findRRs, RRs, zones } from '../src/na.js'
-import random from './random.js'
+import random from '../src/random.js'
 
 describe('NetAngels', _ => {
   it('can authorize', async _ => {
