@@ -9,9 +9,9 @@ it('Test DNS', async $ => {
   $.assert.ok(IPs.length)
 })
 
-async function resolver(domain = 'ekb.ru') {
+async function resolver(domain = 'netangels.ru') {
   const dns = new Resolver({timeout: 300, tries: 3})
-  dns.setServers(['8.8.8.8'])
+  // dns.setServers(['8.8.8.8'])
   let ns = await dns.resolveNs(domain)
   let IPs = []
   for (let nserver of ns) {
