@@ -8,7 +8,8 @@
     "apk": [
       "apk",
       "add",
-      "git"
+      "git",
+      "lego"
     ]
   },
   "postCreateCommand": {
