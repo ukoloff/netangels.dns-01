@@ -1,6 +1,6 @@
 import { it, describe } from 'node:test'
-import { Resolver } from 'node:dns/promises'
 import assert from 'node:assert'
+import { Resolver } from 'node:dns/promises'
 
 let _dns = resolver()
 

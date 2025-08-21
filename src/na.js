@@ -33,3 +33,19 @@ export async function RRs(zoneId) {
   let q = await fetch(`${API}zones/${zoneId}/records`, await auth)
   return await q.json()
 }
+
+export async function findRRs(name, type = null) {
+  let result = []
+  let zz = await zones()
+  for (let z of zz.entities) {
+    if ((0 == z.records_count) || (z.name != name && !name.endsWith('.' + z.name)))
+      continue
+    let Rs = await RRs(z.id)
+    for(let r of Rs.entities) {
+      if ((r.name != name) || (type && r.type != type))
+        continue
+      result.push(r)
+    }
+  }
+  return result
+}
