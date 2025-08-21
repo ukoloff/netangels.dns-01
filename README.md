@@ -3,7 +3,7 @@ DNS challenge via NetAngels.ru for go-acme/lego
 
 # .env
 ```.env
-# .devcontainer\.env
+# .devcontainer/.env
 NETANGELS_API_KEY=XXX
 ```
 
