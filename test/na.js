@@ -1,6 +1,7 @@
 import { it, describe } from 'node:test'
 import assert from 'node:assert'
 import { doAuth, findRRs, RRs, zones } from '../src/na.js'
+import random from './random.js'
 
 describe('NetAngels', _ => {
   it('can authorize', async _ => {
@@ -25,7 +26,7 @@ describe('NetAngels', _ => {
   it('finds records', async _ => {
     let rs = await findRRs('ekb.ru')
     assert.ok(rs.length)
-    let xs = await findRRs('never-used-name.ekb.ru')
+    let xs = await findRRs(`${await random()}.ekb.ru`)
     assert.equal(xs.length, 0)
   })
 
