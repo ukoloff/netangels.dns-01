@@ -1,5 +1,5 @@
 import { it, describe } from 'node:test'
-import { doAuth, zones } from '../src/na.js'
+import { doAuth, RRs, zones } from '../src/na.js'
 import assert from 'node:assert'
 
 describe('NetAngels', _ => {
@@ -11,4 +11,15 @@ describe('NetAngels', _ => {
     let z = await zones()
     assert.ok(z.count)
   })
+
+  it('enumerates records in zones', async _ => {
+    let zz = await zones()
+    for (let z of zz.entities) {
+      if (z.is_technical_zone || 0 == z.records_count)
+        continue
+      let rs = await RRs(z.id)
+      assert.ok(rs.count)
+    }
+  })
+
 })

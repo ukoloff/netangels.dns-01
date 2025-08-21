@@ -28,3 +28,8 @@ export async function zones() {
   let q = await fetch(`${API}zones`, await auth)
   return await q.json()
 }
+
+export async function RRs(zoneId) {
+  let q = await fetch(`${API}zones/${zoneId}/records`, await auth)
+  return await q.json()
+}
