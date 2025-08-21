@@ -2,6 +2,7 @@
 // NetAngels API
 //
 const AUTH = "https://panel.netangels.ru/api/gateway/token/"
+const API = 'https://api-ms.netangels.ru/api/v1/dns/'
 
 const auth = doAuth()
 
@@ -17,6 +18,13 @@ export async function doAuth(key = process.env.NETANGELS_API_KEY) {
     throw new Error('Failed to authorize to netangels.ru')
   }
   return {
-    authorization: j.token
+    headers: {
+      authorization: `Bearer ${j.token}`
+    }
   }
+}
+
+export async function zones() {
+  let q = await fetch(`${API}zones`, await auth)
+  return await q.json()
 }

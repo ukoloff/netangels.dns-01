@@ -1,11 +1,13 @@
 import { it, describe } from 'node:test'
 import { Resolver } from 'node:dns/promises'
+import assert from 'node:assert'
 
 let _dns = resolver()
 
 it('Test DNS', async _ => {
   let dns = await _dns
   let IPs = await dns.resolve('ekb.ru')
+  assert.ok(IPs.length)
 })
 
 async function resolver(domain = 'ekb.ru') {
