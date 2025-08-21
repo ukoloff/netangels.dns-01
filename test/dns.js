@@ -1,13 +1,12 @@
 import { it, describe } from 'node:test'
-import assert from 'node:assert'
 import { Resolver } from 'node:dns/promises'
 
 let _dns = resolver()
 
-it('Test DNS', async _ => {
+it('Test DNS', async $ => {
   let dns = await _dns
   let IPs = await dns.resolve('ekb.ru')
-  assert.ok(IPs.length)
+  $.assert.ok(IPs.length)
 })
 
 async function resolver(domain = 'ekb.ru') {

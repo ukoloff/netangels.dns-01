@@ -1,5 +1,4 @@
 import { it, describe } from 'node:test'
-import assert from 'node:assert'
 import { doAuth, findRRs, RRs, zones } from '../src/na.js'
 import random from '../src/random.js'
 
@@ -8,26 +7,26 @@ describe('NetAngels', _ => {
     await doAuth()
   })
 
-  it('enumerates zones', async _ => {
+  it('enumerates zones', async $ => {
     let z = await zones()
-    assert.ok(z.count)
+    $.assert.ok(z.count)
   })
 
-  it('enumerates records in zones', async _ => {
+  it('enumerates records in zones', async $ => {
     let zz = await zones()
     for (let z of zz.entities) {
       if (z.is_technical_zone || 0 == z.records_count)
         continue
       let rs = await RRs(z.id)
-      assert.ok(rs.count)
+      $.assert.ok(rs.count)
     }
   })
 
-  it('finds records', async _ => {
+  it('finds records', async $ => {
     let rs = await findRRs('ekb.ru')
-    assert.ok(rs.length)
+    $.assert.ok(rs.length)
     let xs = await findRRs(`${await random()}.ekb.ru`)
-    assert.equal(xs.length, 0)
+    $.assert.equal(xs.length, 0)
   })
 
 })
