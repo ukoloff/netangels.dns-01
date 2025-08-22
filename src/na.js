@@ -9,7 +9,7 @@ const API = 'https://api-ms.netangels.ru/api/v1/dns/'
 const auth = doAuth()
 
 export async function resolver(domain = 'netangels.ru') {
-  const dns = new Resolver({timeout: 300, tries: 3})
+  const dns = new Resolver({ timeout: 300, tries: 3 })
   // dns.setServers(['8.8.8.8'])
   let ns = await dns.resolveNs(domain)
   let IPs = []
@@ -56,11 +56,32 @@ export async function findRRs(name, type = null) {
     if ((0 == z.records_count) || (z.name != name && !name.endsWith('.' + z.name)))
       continue
     let Rs = await RRs(z.id)
-    for(let r of Rs.entities) {
+    for (let r of Rs.entities) {
       if ((r.name != name) || (type && r.type != type))
         continue
       result.push(r)
     }
   }
   return result
+}
+
+export async function create(rec) {
+  let params = await auth
+  let q = await fetch(`${API}/records`, {
+    ...params,
+    method: 'POST',
+    body: JSON.stringify(rec),
+    headers: {
+      'Content-Type': 'application/json',
+      ...params.headers
+    }
+  })
+  return await q.json()
+}
+
+export async function drop(rrId) {
+  await fetch(`${API}records/${rrId}`, {
+    ...await auth,
+    method: 'DELETE',
+  })
 }

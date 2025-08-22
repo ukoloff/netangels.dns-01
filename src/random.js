@@ -14,7 +14,7 @@ export default async function random(n = 9) {
         reject(err)
         return
       }
-      resolve(buf.toString('base64').replace(/=+/g, ''))
+      resolve(buf.toString('base64').replace(/\W+/g, ''))
     }
   }
 }

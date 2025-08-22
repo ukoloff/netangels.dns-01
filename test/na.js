@@ -1,5 +1,5 @@
 import { it, describe } from 'node:test'
-import { doAuth, findRRs, RRs, zones } from '../src/na.js'
+import { create, doAuth, drop, findRRs, RRs, zones } from '../src/na.js'
 import random from '../src/random.js'
 
 describe('NetAngels', _ => {
@@ -27,6 +27,16 @@ describe('NetAngels', _ => {
     $.assert.ok(rs.length)
     let xs = await findRRs(`${await random()}.ekb.ru`)
     $.assert.equal(xs.length, 0)
+  })
+
+  it('creates/deletes arbitrary records', async $ => {
+    let r = await create({
+      type: 'TXT',
+      name: `${await random()}.test.uralhimmash.com`,
+      value: `Hello, ${await random()}`,
+      ttl: 300
+    })
+    await drop(r.id)
   })
 
 })
