@@ -6,6 +6,11 @@ DNS challenge via NetAngels.ru for go-acme/lego
 # .devcontainer/.env
 NETANGELS_API_KEY=XXX
 ```
+# Время ожидания
+
+Обновление DNS занимает
+(на 22.08.2028):
+48, 55, 64, 55, 60, 64, 54, 55, 67, 55
 
 ## See also
 + [NetAngels]

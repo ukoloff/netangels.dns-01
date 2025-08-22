@@ -56,8 +56,8 @@ describe('NetAngels', _ => {
     $.assert.deepEqual(1, rs.length)
   })
 
-  it('measuring DNS delay', async $ => {
-    for (let i = 0; i < 5; i++) {
+  it.skip('measuring DNS delay', async $ => {
+    for (let i = 0; i < 10; i++) {
 
       let name = `${await random()}.test.uralhimmash.com`
       let rec = {
