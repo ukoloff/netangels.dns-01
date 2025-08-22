@@ -8,8 +8,15 @@ describe('CLI interface', $ => {
   it('creates TXT RRs', async $ => {
     let name = `${await random()}.cli.uralhimmash.com`
     let value = `Hi, ${await random()}!`
-    let child = spawn('node', ['.', 'present', name, value], {stdio: 'inherit'})
-
+    let child = spawn('node', ['.', 'present', name, value], { stdio: 'inherit' })
+    let res = await new Promise(function (resolve, reject) {
+      child.on('error', reject).on('exit', resolve)
+    })
+    $.assert.equal(res, 0)
+    await remove(name, {
+      type: 'TXT',
+      value,
+    })
   })
 
   it('removes TXT RRs', async $ => {
