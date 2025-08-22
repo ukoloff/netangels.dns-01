@@ -1,10 +1,25 @@
 //
 // NetAngels API
 //
+import { Resolver } from 'node:dns/promises'
+
 const AUTH = "https://panel.netangels.ru/api/gateway/token/"
 const API = 'https://api-ms.netangels.ru/api/v1/dns/'
 
 const auth = doAuth()
+
+export async function resolver(domain = 'netangels.ru') {
+  const dns = new Resolver({timeout: 300, tries: 3})
+  // dns.setServers(['8.8.8.8'])
+  let ns = await dns.resolveNs(domain)
+  let IPs = []
+  for (let nserver of ns) {
+    let ips = await dns.resolve4(nserver)
+    IPs.push(...ips)
+  }
+  dns.setServers(IPs)
+  return dns
+}
 
 export async function doAuth(key = process.env.NETANGELS_API_KEY) {
   let params = new FormData()

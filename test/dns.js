@@ -1,5 +1,5 @@
 import { it, describe } from 'node:test'
-import { Resolver } from 'node:dns/promises'
+import { resolver } from '../src/na.js'
 
 let _dns = resolver()
 
@@ -8,16 +8,3 @@ it('Test DNS', async $ => {
   let IPs = await dns.resolve('ekb.ru')
   $.assert.ok(IPs.length)
 })
-
-async function resolver(domain = 'netangels.ru') {
-  const dns = new Resolver({timeout: 300, tries: 3})
-  // dns.setServers(['8.8.8.8'])
-  let ns = await dns.resolveNs(domain)
-  let IPs = []
-  for (let nserver of ns) {
-    let ips = await dns.resolve4(nserver)
-    IPs.push(...ips)
-  }
-  dns.setServers(IPs)
-  return dns
-}
