@@ -1,5 +1,6 @@
+import { setTimeout } from 'node:timers/promises'
 import { it, describe } from 'node:test'
-import { create, doAuth, drop, findRRs, remove, RRs, zones } from '../src/na.js'
+import { create, doAuth, drop, findRRs, remove, resolver, RRs, zones } from '../src/na.js'
 import random from '../src/random.js'
 
 describe('NetAngels', _ => {
@@ -55,5 +56,36 @@ describe('NetAngels', _ => {
     $.assert.deepEqual(1, rs.length)
   })
 
+  it('measuring DNS delay', async $ => {
+    for (let i = 0; i < 5; i++) {
+
+      let name = `${await random()}.test.uralhimmash.com`
+      let rec = {
+        type: 'TXT',
+        value: `Bye, ${await random()}!`,
+      }
+      let r = await create({
+        ...rec,
+        name,
+        ttl: 330,
+      })
+      let rslvr = await resolver()
+      let start = new Date()
+      while (1) {
+        try {
+          let RRs = await rslvr.resolveTxt(name)
+          $.assert.ok(RRs.length)
+          break
+        } catch (e) {
+          process.stdout.write(`\r${Math.round((new Date() - start) / 1000)}...`)
+          await setTimeout(3000)
+        }
+      }
+      console.log('\rTime:', Math.round((new Date() - start) / 1000))
+      let rs = await remove(name, rec)
+      $.assert.deepEqual(1, rs.length)
+    }
+
+  })
 
 })
