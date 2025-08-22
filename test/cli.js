@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process'
 import { it, describe } from 'node:test'
-import { create, doAuth, drop, findRRs, remove, resolver, RRs, zones } from '../src/na.js'
+import { create, remove } from '../src/na.js'
 import random from '../src/random.js'
 
 describe('CLI interface', $ => {

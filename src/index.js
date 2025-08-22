@@ -1,5 +1,6 @@
 import help from './help.js'
 import { present, cleanup } from './exec.js'
+import www from './www.js'
 
 if (process.argv.length < 3)
   help()
@@ -17,8 +18,7 @@ switch (process.argv[2]) {
       await cleanup(...args)
     break
   case 'www':
-    if (process.argv.length != 3)
-      help()
+    www(process.argv.slice(3))
     break
   default:
     help()
