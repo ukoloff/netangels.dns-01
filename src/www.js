@@ -5,7 +5,7 @@ import cluster from 'node:cluster'
 import { createServer } from 'node:http'
 import { json } from 'node:stream/consumers'
 import watch from './watch.js'
-import { create, remove } from "./na.js"
+import { create, normalizeDomain, remove } from "./na.js"
 
 export default function www(args) {
   if (cluster.isPrimary) {
@@ -33,12 +33,12 @@ async function handler(req, res) {
         let r
         if (prsnt) {
           r = await create({
-            name: j.fqdn,
+            name: normalizeDomain(j.fqdn),
             type: 'TXT',
             value: j.value,
           })
         } else {
-          r = await remove(j.fqdn, {
+          r = await remove(normalizeDomain(j.fqdn), {
             type: 'TXT',
             value: j.value,
           })

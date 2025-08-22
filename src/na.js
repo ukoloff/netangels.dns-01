@@ -8,6 +8,10 @@ const API = 'https://api-ms.netangels.ru/api/v1/dns/'
 
 const auth = doAuth()
 
+export function normalizeDomain(domain) {
+  return domain.replace(/[.]+$/, '')
+}
+
 export async function resolver(domain = 'netangels.ru') {
   const dns = new Resolver({ timeout: 300, tries: 3 })
   // dns.setServers(['8.8.8.8'])
