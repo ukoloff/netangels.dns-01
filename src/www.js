@@ -20,5 +20,5 @@ export default function www(args) {
 
 function handler(req, res) {
   console.log(req)
-  res.end('Hi!')
+  res.end('Hoo!')
 }
