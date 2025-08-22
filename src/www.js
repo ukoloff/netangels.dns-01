@@ -19,6 +19,18 @@ export default function www(args) {
 }
 
 function handler(req, res) {
-  console.log(req)
-  res.end('Hoo!')
+  let verb = req.url.replace(/^\/+|\/+$/g, '')
+  let prsnt = 0
+  switch (verb) {
+    case 'alive':
+      res.end('Ok')
+      break
+    case 'present': prsnt = 1
+    case 'cleanup':
+      res.end('+')
+      break
+    default:
+      res.statusCode = 404
+      res.end()
+  }
 }

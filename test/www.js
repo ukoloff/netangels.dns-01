@@ -8,13 +8,20 @@ describe('Web API', $ => {
   let server
 
   before(async $ => {
-    server = spawn('node', ['.', 'www'])
+    server = spawn('node', ['.', 'www'], {stdio: 'inherit'})
     await new Promise((resolve, reject) => {
       server
         .on('spawn', resolve)
         .on('error', reject)
     })
-    await setTimeout(1000)
+    while (1) {
+      try {
+        await fetch('http://localhost/alive')
+        break
+      } catch(e) {
+        await setTimeout(100)
+      }
+    }
   })
 
   after($ => {
@@ -22,7 +29,7 @@ describe('Web API', $ => {
   })
 
   it('creates TXT RRs', async $ => {
-    let q = await fetch('http://localhost')
+    let q = await fetch('http://localhost/present')
     let t = await q.text()
     $.assert.ok(t)
     return
@@ -39,7 +46,7 @@ describe('Web API', $ => {
   })
 
   it('removes TXT RRs', async $ => {
-    let q = await fetch('http://localhost')
+    let q = await fetch('http://localhost/cleanup')
     let t = await q.text()
     $.assert.ok(t)
     return
