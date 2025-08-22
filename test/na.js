@@ -3,7 +3,7 @@ import { it, describe } from 'node:test'
 import { create, doAuth, drop, findRRs, remove, resolver, RRs, zones } from '../src/na.js'
 import random from '../src/random.js'
 
-describe.skip('NetAngels', _ => {
+describe('NetAngels', _ => {
   it('can authorize', async _ => {
     await doAuth()
   })

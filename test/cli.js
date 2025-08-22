@@ -3,7 +3,7 @@ import { it, describe } from 'node:test'
 import { create, remove } from '../src/na.js'
 import random from '../src/random.js'
 
-describe.skip('CLI interface', $ => {
+describe('CLI interface', $ => {
 
   it('creates TXT RRs', async $ => {
     let name = `${await random()}.cli.uralhimmash.com`
