@@ -18,7 +18,7 @@ export default function www(args) {
   srv.listen(80)
 }
 
-function handler(req, res) {
+async function handler(req, res) {
   let verb = req.url.replace(/^\/+|\/+$/g, '')
   let prsnt = 0
   switch (verb) {
@@ -27,6 +27,7 @@ function handler(req, res) {
       break
     case 'present': prsnt = 1
     case 'cleanup':
+      let j = await json(req)
       res.end('+')
       break
     default:
