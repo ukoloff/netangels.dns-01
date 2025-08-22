@@ -88,10 +88,11 @@ export async function create(rec) {
 }
 
 export async function drop(rrId) {
-  await fetch(`${API}records/${rrId}`, {
+  let q = await fetch(`${API}records/${rrId}`, {
     ...await auth,
     method: 'DELETE',
   })
+  return await q.json()
 }
 
 export async function remove(name, where) {
@@ -99,5 +100,6 @@ export async function remove(name, where) {
   for (let r of rs) {
     await drop(r.id)
   }
+  return rs
 }
 

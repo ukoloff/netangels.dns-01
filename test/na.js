@@ -36,7 +36,8 @@ describe('NetAngels', _ => {
       value: `Hello, ${await random()}`,
       ttl: 300
     })
-    await drop(r.id)
+    let q = await drop(r.id)
+    $.assert.strictEqual(q.type, 'TXT')
   })
 
   it('removes records by data', async $ => {
@@ -50,7 +51,8 @@ describe('NetAngels', _ => {
       name,
       ttl: 330,
     })
-    await remove(name, rec)
+    let rs = await remove(name, rec)
+    $.assert.deepEqual(1, rs.length)
   })
 
 
