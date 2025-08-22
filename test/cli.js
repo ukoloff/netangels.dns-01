@@ -13,10 +13,11 @@ describe('CLI interface', $ => {
       child.on('error', reject).on('exit', resolve)
     })
     $.assert.equal(res, 0)
-    await remove(name, {
+    let RRs = await remove(name, {
       type: 'TXT',
       value,
     })
+    $.assert.equal(RRs.length, 1)
   })
 
   it('removes TXT RRs', async $ => {
