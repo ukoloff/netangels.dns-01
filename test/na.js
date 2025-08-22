@@ -25,8 +25,8 @@ describe('NetAngels', _ => {
   it('finds records', async $ => {
     let rs = await findRRs('ekb.ru')
     $.assert.ok(rs.length)
-    let xs = await findRRs(`${await random()}.ekb.ru`)
-    $.assert.equal(xs.length, 0)
+    rs = await findRRs(`${await random()}.ekb.ru`)
+    $.assert.strictEqual(rs.length, 0)
   })
 
   it('creates/deletes arbitrary records', async $ => {
