@@ -19,19 +19,25 @@ export default function www(args) {
 }
 
 async function handler(req, res) {
-  let verb = req.url.replace(/^\/+|\/+$/g, '')
-  let prsnt = 0
-  switch (verb) {
-    case 'alive':
-      res.end('Ok')
-      break
-    case 'present': prsnt = 1
-    case 'cleanup':
-      let j = await json(req)
-      res.end('+')
-      break
-    default:
-      res.statusCode = 404
-      res.end()
+  try {
+    let verb = req.url.replace(/^\/+|\/+$/g, '')
+    let prsnt = 0
+    switch (verb) {
+      case 'alive':
+        res.end('Ok')
+        break
+      case 'present': prsnt = 1
+      case 'cleanup':
+        let j = await json(req)
+        res.end('+')
+        break
+      default:
+        res.statusCode = 404
+        res.end()
+    }
+  } catch (e) {
+    res.statusCode = 500
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify({ error: e.message }))
   }
 }

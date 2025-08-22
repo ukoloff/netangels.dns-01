@@ -26,7 +26,8 @@ describe('Web API', $ => {
     }
   })
 
-  after($ => {
+  after(async $ => {
+    await setTimeout(300)
     server.kill()
   })
 
