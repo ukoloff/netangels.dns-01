@@ -61,8 +61,11 @@ export async function findRRs(name, where = {}) {
       if (r.name != name)
         continue
       for (const [key, value] of Object.entries(where)) {
-        if (value !== r[key])
-          continue RR
+        if (value === r[key])
+          continue
+        if (r.details && value === r.details[key])
+          continue
+        continue RR
       }
       result.push(r)
     }
@@ -90,3 +93,11 @@ export async function drop(rrId) {
     method: 'DELETE',
   })
 }
+
+export async function remove(name, where) {
+  let rs = await findRRs(name, where)
+  for (let r of rs) {
+    await drop(r.id)
+  }
+}
+
