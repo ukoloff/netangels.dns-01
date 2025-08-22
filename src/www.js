@@ -5,6 +5,7 @@ import cluster from 'node:cluster'
 import { createServer } from 'node:http'
 import { json } from 'node:stream/consumers'
 import watch from './watch.js'
+import { create, remove } from "./na.js"
 
 export default function www(args) {
   if (cluster.isPrimary) {
@@ -29,7 +30,21 @@ async function handler(req, res) {
       case 'present': prsnt = 1
       case 'cleanup':
         let j = await json(req)
-        res.end('+')
+        let r
+        if (prsnt) {
+          r = await create({
+            name: j.fqdn,
+            type: 'TXT',
+            value: j.value,
+          })
+        } else {
+          r = await remove(j.fqdn, {
+            type: 'TXT',
+            value: j.value,
+          })
+        }
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify(r))
         break
       default:
         res.statusCode = 404

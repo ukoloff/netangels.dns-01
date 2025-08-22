@@ -33,46 +33,44 @@ describe('Web API', $ => {
 
   it('creates TXT RRs', async $ => {
     let fqdn = `${await random()}.web.uralhimmash.com`
-    let value = `Oh, ${await random()}.web.uralhimmash.com!`
+    let value = `Oh, ${await random()}!`
+
     let q = await fetch('http://localhost/present', {
       method: 'POST',
       body: JSON.stringify({ fqdn, value }),
       headers: { 'Content-Type': 'application/json' }
     })
-    let t = await q.text()
-    $.assert.ok(t)
-    /**************************************************************************
-        let name = `${await random()}.cli.uralhimmash.com`
-        let value = `Hi, ${await random()}!`
-        let child = spawn('node', ['.', 'present', name, value], { stdio: 'inherit' })
-        let res = await wait(child)
-        $.assert.equal(res, 0)
-        let RRs = await remove(name, {
-          type: 'TXT',
-          value,
-        })
-        $.assert.equal(RRs.length, 1)
-    **************************************************************************/
+    let t = await q.json()
+    $.assert.equal(t.type, 'TXT')
+
+    let RRs = await remove(fqdn, {
+      type: 'TXT',
+      value,
+    })
+    $.assert.equal(RRs.length, 1)
   })
 
-  it.skip('removes TXT RRs', async $ => {
-    let q = await fetch('http://localhost/cleanup')
-    let t = await q.text()
-    $.assert.ok(t)
-    return
-    let name = `${await random()}.cli.uralhimmash.com`
-    let value = `Oops, ${random()}!`
+  it('removes TXT RRs', async $ => {
+    let fqdn = `${await random()}.web.uralhimmash.com`
+    let value = `Wow, ${await random()}!`
+
     let r = await create({
-      name,
+      name: fqdn,
       type: 'TXT',
       value,
       ttl: 301,
     })
     $.assert.equal(r.type, 'TXT')
-    let child = spawn('node', ['.', 'cleanup', name, value], { stdio: 'inherit' })
-    let res = await wait(child)
-    $.assert.equal(res, 0)
-    let RRs = await remove(name, {
+
+    let q = await fetch('http://localhost/cleanup', {
+      method: 'POST',
+      body: JSON.stringify({ fqdn, value }),
+      headers: { 'Content-Type': 'application/json' }
+    })
+    let t = await q.json()
+    $.assert.ok(t.length, 1)
+
+    let RRs = await remove(fqdn, {
       type: 'TXT',
       value,
     })
