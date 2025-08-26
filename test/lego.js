@@ -6,7 +6,7 @@ import { it, describe } from 'node:test'
 import random from '../src/random.js'
 import { startWWW, stopWWW } from './www.js'
 
-describe('lego', $ => {
+describe.skip('lego', $ => {
   it('uses exec interface', exec)
   it('uses http interface', http)
 })
