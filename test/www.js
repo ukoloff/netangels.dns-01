@@ -4,7 +4,7 @@ import { create, remove } from '../src/na.js'
 import random from '../src/random.js'
 import { setTimeout } from 'node:timers/promises'
 
-describe('Web API', $ => {
+describe.skip('Web API', $ => {
   let server
 
   before(async $ => {

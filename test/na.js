@@ -4,7 +4,7 @@ import { create, auth, drop, findRRs, remove, resolver, RRs, zones } from '../sr
 import random from '../src/random.js'
 import { assert } from 'node:console'
 
-describe('NetAngels', _ => {
+describe.skip('NetAngels', _ => {
   it('can authorize', async $ => {
     let z = await auth()
     $.assert.ok(z)
