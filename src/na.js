@@ -6,10 +6,8 @@ import { Resolver } from 'node:dns/promises'
 const AUTH = "https://panel.netangels.ru/api/gateway/token/"
 const API = 'https://api-ms.netangels.ru/api/v1/dns/'
 
-const auth = doAuth()
-
 export function normalizeDomain(domain) {
-  return domain.replace(/[.]+$/, '')
+  return domain.replace(/[.]+$/, '').toLowerCase()
 }
 
 export async function resolver(domain = 'netangels.ru') {
@@ -25,7 +23,7 @@ export async function resolver(domain = 'netangels.ru') {
   return dns
 }
 
-export async function doAuth(key = process.env.NETANGELS_API_KEY) {
+export async function auth(key = process.env.NETANGELS_API_KEY) {
   let params = new FormData()
   params.append('api_key', key)
   let auth = await fetch(AUTH, {
@@ -36,21 +34,40 @@ export async function doAuth(key = process.env.NETANGELS_API_KEY) {
   if (!j.token) {
     throw new Error('Failed to authorize to netangels.ru')
   }
-  return {
-    headers: {
-      authorization: `Bearer ${j.token}`
+  return j.token
+}
+
+let token
+
+async function req(verb, options = {}) {
+  for (let i = 0; i < 2; i++) {
+    token ||= auth()
+    let q = await fetch(`${API}${verb}`, {
+      ...options,
+      headers: {
+        ...options.headers,
+        authorization: `Bearer ${await token}`
+      }
+    })
+    if (q.ok)
+      return await q.json()
+    if (q.status == 403 && !i) {
+      token = null
+      continue
     }
+    throw new Error(q.statusText, {
+      code: q.status,
+      cause: await q.json(),
+    })
   }
 }
 
 export async function zones() {
-  let q = await fetch(`${API}zones`, await auth)
-  return await q.json()
+  return await req('zones')
 }
 
 export async function RRs(zoneId) {
-  let q = await fetch(`${API}zones/${zoneId}/records`, await auth)
-  return await q.json()
+  return await req(`zones/${zoneId}/records`)
 }
 
 export async function findRRs(name, where = {}) {
@@ -78,25 +95,17 @@ export async function findRRs(name, where = {}) {
 }
 
 export async function create(rec) {
-  let params = await auth
-  let q = await fetch(`${API}/records`, {
-    ...params,
+  return await req('records', {
     method: 'POST',
-    body: JSON.stringify(rec),
     headers: {
       'Content-Type': 'application/json',
-      ...params.headers
-    }
+    },
+    body: JSON.stringify(rec),
   })
-  return await q.json()
 }
 
 export async function drop(rrId) {
-  let q = await fetch(`${API}records/${rrId}`, {
-    ...await auth,
-    method: 'DELETE',
-  })
-  return await q.json()
+  return await req(`records/${rrId}`, { method: 'DELETE' })
 }
 
 export async function remove(name, where) {
@@ -106,4 +115,3 @@ export async function remove(name, where) {
   }
   return rs
 }
-
