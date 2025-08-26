@@ -1,6 +1,7 @@
+import fs from 'node:fs/promises'
+import { X509Certificate } from 'node:crypto'
 import { spawn } from 'node:child_process'
 import { it, describe } from 'node:test'
-import { create, remove } from '../src/na.js'
 import random from '../src/random.js'
 
 const Staging = 'https://acme-staging-v02.api.letsencrypt.org/directory'
@@ -18,7 +19,7 @@ async function exec($) {
   process.env.EXEC_PROPAGATION_TIMEOUT = 300
   process.env.LEGO_SERVER = Staging
 
-  let domain = `${await random()}.cli.uralhimmash.com`.toLowerCase()
+  let domain = `${await random()}.exec.uralhimmash.com`.toLowerCase()
 
   let child = spawn('lego', [
     '-a',
@@ -30,6 +31,10 @@ async function exec($) {
     { stdio: 'inherit' })
   let res = await wait(child)
   $.assert.equal(res, 0)
+  let crt = new X509Certificate(await fs.readFile('./.lego/certificates/' + domain + '.crt'))
+  $.assert.ok(crt.serialNumber)
+  $.assert.equal(crt.subject, 'CN=' + domain)
+  $.assert.equal(crt.subjectAltName, 'DNS:' + domain)
 }
 
 async function http($) {
