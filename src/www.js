@@ -12,7 +12,8 @@ export default function www(args) {
     for (let i = 0; i < 3; i++)
       cluster.fork()
     cluster.on('exit', (worker, code, signal) => cluster.fork())
-    watch()
+    if (process.env.DEV_WATCH)
+      watch()
     return
   }
   let srv = createServer(handler)

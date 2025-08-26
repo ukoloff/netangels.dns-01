@@ -5,6 +5,7 @@ DNS challenge via NetAngels.ru for go-acme/lego
 ```.env
 # .devcontainer/.env
 NETANGELS_API_KEY=XXX
+DEV_WATCH=1
 ```
 # Время ожидания
 
