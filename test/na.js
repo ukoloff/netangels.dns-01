@@ -4,8 +4,9 @@ import { create, auth, drop, findRRs, remove, resolver, RRs, zones } from '../sr
 import random from '../src/random.js'
 
 describe('NetAngels', _ => {
-  it('can authorize', async _ => {
-    await auth()
+  it('can authorize', async $ => {
+    let z = await auth()
+    $.assert.ok(z)
   })
 
   it('enumerates zones', async $ => {

@@ -6,10 +6,8 @@ import { Resolver } from 'node:dns/promises'
 const AUTH = "https://panel.netangels.ru/api/gateway/token/"
 const API = 'https://api-ms.netangels.ru/api/v1/dns/'
 
-const _auth = auth()
-
 export function normalizeDomain(domain) {
-  return domain.replace(/[.]+$/, '')
+  return domain.replace(/[.]+$/, '').toLowerCase()
 }
 
 export async function resolver(domain = 'netangels.ru') {
@@ -36,21 +34,30 @@ export async function auth(key = process.env.NETANGELS_API_KEY) {
   if (!j.token) {
     throw new Error('Failed to authorize to netangels.ru')
   }
-  return {
+  return j.token
+}
+
+let token
+
+async function req(verb, options = {}) {
+  token ||= auth()
+  let q = await fetch(`${API}${verb}`, {
+    ...options,
     headers: {
-      authorization: `Bearer ${j.token}`
+      ...options.headers,
+      authorization: `Bearer ${await token}`
     }
-  }
+  })
+  if (q.ok)
+    return await q.json()
 }
 
 export async function zones() {
-  let q = await fetch(`${API}zones`, await _auth)
-  return await q.json()
+  return await req('zones')
 }
 
 export async function RRs(zoneId) {
-  let q = await fetch(`${API}zones/${zoneId}/records`, await _auth)
-  return await q.json()
+  return await req(`zones/${zoneId}/records`)
 }
 
 export async function findRRs(name, where = {}) {
@@ -78,25 +85,17 @@ export async function findRRs(name, where = {}) {
 }
 
 export async function create(rec) {
-  let params = await _auth
-  let q = await fetch(`${API}/records`, {
-    ...params,
+  return await req('records', {
     method: 'POST',
-    body: JSON.stringify(rec),
     headers: {
       'Content-Type': 'application/json',
-      ...params.headers
-    }
+    },
+    body: JSON.stringify(rec),
   })
-  return await q.json()
 }
 
 export async function drop(rrId) {
-  let q = await fetch(`${API}records/${rrId}`, {
-    ...await _auth,
-    method: 'DELETE',
-  })
-  return await q.json()
+  return await req(`records/${rrId}`, { method: 'DELETE' })
 }
 
 export async function remove(name, where) {
@@ -106,4 +105,3 @@ export async function remove(name, where) {
   }
   return rs
 }
-
