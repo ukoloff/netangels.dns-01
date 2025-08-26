@@ -8,27 +8,11 @@ describe.skip('Web API', $ => {
   let server
 
   before(async $ => {
-    server = spawn('node', ['.', 'www'], { stdio: 'inherit' })
-    await new Promise((resolve, reject) => {
-      server
-        .on('spawn', resolve)
-        .on('error', reject)
-    })
-    let t
-    while (1) {
-      try {
-        let q = await fetch('http://localhost/alive')
-        t = await q.text()
-        break
-      } catch (e) {
-        await setTimeout(100)
-      }
-    }
+    server = await startWWW()
   })
 
   after(async $ => {
-    await setTimeout(300)
-    server.kill()
+    await stopWWW(server)
   })
 
   it('creates TXT RRs', async $ => {
@@ -79,11 +63,35 @@ describe.skip('Web API', $ => {
 
 })
 
-
 function wait(child) {
   return new Promise(function (resolve, reject) {
     child
       .on('error', reject)
       .on('exit', resolve)
   })
+}
+
+export async function startWWW() {
+  let server = spawn('node', ['.', 'www'], { stdio: 'inherit' })
+  await new Promise((resolve, reject) => {
+    server
+      .on('spawn', resolve)
+      .on('error', reject)
+  })
+  let t
+  while (1) {
+    try {
+      let q = await fetch('http://localhost/alive')
+      t = await q.text()
+      break
+    } catch (e) {
+      await setTimeout(100)
+    }
+  }
+  return server
+}
+
+export async function stopWWW(server) {
+  await setTimeout(300)
+  server.kill()
 }

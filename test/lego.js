@@ -1,9 +1,10 @@
+import assert from 'node:assert'
 import fs from 'node:fs/promises'
 import { X509Certificate } from 'node:crypto'
 import { spawn } from 'node:child_process'
 import { it, describe } from 'node:test'
 import random from '../src/random.js'
-import assert from 'node:assert'
+import { startWWW, stopWWW } from './www.js'
 
 describe('lego', $ => {
   it('uses exec interface', exec)
@@ -19,7 +20,16 @@ async function exec($) {
 }
 
 async function http($) {
-
+  let server = await startWWW()
+  try {
+    await lego('httpreq', {
+      HTTPREQ_ENDPOINT: 'http://localhost',
+      HTTPREQ_POLLING_INTERVAL: 10,
+      HTTPREQ_PROPAGATION_TIMEOUT: 300,
+    })
+  } finally {
+    await stopWWW(server)
+  }
 }
 
 function wait(child) {
@@ -37,7 +47,7 @@ async function lego(provider, env = {}) {
     process.env[k] = v
   }
 
-  let domain = `${await random()}.exec.uralhimmash.com`.toLowerCase()
+  let domain = `${await random()}.${provider}.uralhimmash.com`.toLowerCase()
 
   let child = spawn('lego', [
     '-a',
