@@ -35,6 +35,10 @@ async function exec($) {
   $.assert.ok(crt.serialNumber)
   $.assert.equal(crt.subject, 'CN=' + domain)
   $.assert.equal(crt.subjectAltName, 'DNS:' + domain)
+
+  for (let ext of 'key pfx crt json'.split(' ')) {
+    $.assert.ok(await fs.stat('./.lego/certificates/' + domain + '.' + ext))
+  }
 }
 
 async function http($) {
