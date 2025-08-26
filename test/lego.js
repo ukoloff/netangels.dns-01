@@ -14,10 +14,11 @@ function lego() {
 }
 
 async function exec($) {
-  process.env.LEGO_EMAIL = 'stas@ekb.ru'
   process.env.EXEC_PATH = 'bin/na01'
-  process.env.EXEC_PROPAGATION_TIMEOUT = 300
+  process.env.LEGO_EMAIL = 'stas@ekb.ru'
   process.env.LEGO_SERVER = Staging
+  process.env.EXEC_POLLING_INTERVAL = 10
+  process.env.EXEC_PROPAGATION_TIMEOUT = 300
 
   let domain = `${await random()}.exec.uralhimmash.com`.toLowerCase()
 
