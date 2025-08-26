@@ -40,16 +40,26 @@ export async function auth(key = process.env.NETANGELS_API_KEY) {
 let token
 
 async function req(verb, options = {}) {
-  token ||= auth()
-  let q = await fetch(`${API}${verb}`, {
-    ...options,
-    headers: {
-      ...options.headers,
-      authorization: `Bearer ${await token}`
+  for (let i = 0; i < 2; i++) {
+    token ||= auth()
+    let q = await fetch(`${API}${verb}`, {
+      ...options,
+      headers: {
+        ...options.headers,
+        authorization: `Bearer ${await token}`
+      }
+    })
+    if (q.ok)
+      return await q.json()
+    if (q.status == 403 && !i) {
+      token = null
+      continue
     }
-  })
-  if (q.ok)
-    return await q.json()
+    throw new Error(q.statusText, {
+      code: q.status,
+      cause: await q.json(),
+    })
+  }
 }
 
 export async function zones() {

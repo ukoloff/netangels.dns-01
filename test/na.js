@@ -2,6 +2,7 @@ import { setTimeout } from 'node:timers/promises'
 import { it, describe } from 'node:test'
 import { create, auth, drop, findRRs, remove, resolver, RRs, zones } from '../src/na.js'
 import random from '../src/random.js'
+import { assert } from 'node:console'
 
 describe('NetAngels', _ => {
   it('can authorize', async $ => {
@@ -40,6 +41,20 @@ describe('NetAngels', _ => {
     })
     let q = await drop(r.id)
     $.assert.strictEqual(q.type, 'TXT')
+  })
+
+  it('fails to create unauthorized records', async $ => {
+    try {
+      let r = await create({
+        type: 'TXT',
+        name: `${await random()}.test.google.com`,
+        value: `Hello, ${await random()}`,
+        ttl: 302
+      })
+      $.assert.fail('Should throw')
+    } catch (e) {
+      // console.log(e)
+    }
   })
 
   it('removes records by data', async $ => {
