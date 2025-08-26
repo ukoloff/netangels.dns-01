@@ -6,7 +6,7 @@ import { Resolver } from 'node:dns/promises'
 const AUTH = "https://panel.netangels.ru/api/gateway/token/"
 const API = 'https://api-ms.netangels.ru/api/v1/dns/'
 
-const auth = doAuth()
+const _auth = auth()
 
 export function normalizeDomain(domain) {
   return domain.replace(/[.]+$/, '')
@@ -25,7 +25,7 @@ export async function resolver(domain = 'netangels.ru') {
   return dns
 }
 
-export async function doAuth(key = process.env.NETANGELS_API_KEY) {
+export async function auth(key = process.env.NETANGELS_API_KEY) {
   let params = new FormData()
   params.append('api_key', key)
   let auth = await fetch(AUTH, {
@@ -44,12 +44,12 @@ export async function doAuth(key = process.env.NETANGELS_API_KEY) {
 }
 
 export async function zones() {
-  let q = await fetch(`${API}zones`, await auth)
+  let q = await fetch(`${API}zones`, await _auth)
   return await q.json()
 }
 
 export async function RRs(zoneId) {
-  let q = await fetch(`${API}zones/${zoneId}/records`, await auth)
+  let q = await fetch(`${API}zones/${zoneId}/records`, await _auth)
   return await q.json()
 }
 
@@ -78,7 +78,7 @@ export async function findRRs(name, where = {}) {
 }
 
 export async function create(rec) {
-  let params = await auth
+  let params = await _auth
   let q = await fetch(`${API}/records`, {
     ...params,
     method: 'POST',
@@ -93,7 +93,7 @@ export async function create(rec) {
 
 export async function drop(rrId) {
   let q = await fetch(`${API}records/${rrId}`, {
-    ...await auth,
+    ...await _auth,
     method: 'DELETE',
   })
   return await q.json()

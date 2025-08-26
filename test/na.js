@@ -1,11 +1,11 @@
 import { setTimeout } from 'node:timers/promises'
 import { it, describe } from 'node:test'
-import { create, doAuth, drop, findRRs, remove, resolver, RRs, zones } from '../src/na.js'
+import { create, auth, drop, findRRs, remove, resolver, RRs, zones } from '../src/na.js'
 import random from '../src/random.js'
 
 describe('NetAngels', _ => {
   it('can authorize', async _ => {
-    await doAuth()
+    await auth()
   })
 
   it('enumerates zones', async $ => {
