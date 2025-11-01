@@ -2,7 +2,6 @@ package na01
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 	"os"
@@ -13,10 +12,6 @@ const (
 	API     = "https://api-ms.netangels.ru/api/v1/dns/"
 	ENV_API = "NETANGELS_API_KEY"
 )
-
-type auth struct {
-	Token string `json:"token"`
-}
 
 func Auth() (string, error) {
 	req := url.Values{}
@@ -50,20 +45,20 @@ type Zone struct {
 	} `json:"secondary_dns"`
 }
 
-func Zones() {
+func Zones() ([]Zone, error) {
 	token, err := Auth()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodGet, API+"/zones", http.NoBody)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	req.Header.Add("Authorization", "Bearer "+token)
 	resp, err := client.Do(req)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 	var r struct {
@@ -72,7 +67,7 @@ func Zones() {
 	}
 	err = json.NewDecoder(resp.Body).Decode(&r)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	fmt.Println(r)
+	return r.List, nil
 }
