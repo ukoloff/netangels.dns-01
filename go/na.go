@@ -45,7 +45,9 @@ type Zone struct {
 	Email    string `json:"soa_email"`
 	Transfer bool   `json:"is_in_transfer"`
 	Tech     bool   `json:"is_technical_zone"`
-	DNS      any    `json:"secondary_dns"`
+	DNS      struct {
+		List []string `json:"entities"`
+	} `json:"secondary_dns"`
 }
 
 func Zones() {
