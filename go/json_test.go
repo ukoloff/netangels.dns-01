@@ -1,7 +1,7 @@
-package main_test
+package na01_test
 
 import (
-	main "na01"
+	"na01"
 	"testing"
 )
 
@@ -57,7 +57,7 @@ func TestStringify(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, gotErr := main.Stringify(tt.data)
+			got, gotErr := na01.Stringify(tt.data)
 			if gotErr != nil {
 				if !tt.wantErr {
 					t.Errorf("Stringify() failed: %v", gotErr)
