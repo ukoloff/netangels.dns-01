@@ -1,6 +1,7 @@
 package na01_test
 
 import (
+	"math/rand/v2"
 	"na01"
 	"testing"
 )
@@ -54,8 +55,8 @@ func TestStringify(t *testing.T) {
 			data: Ext{Base: Base{P: 7, Q: 8}, R: 9},
 			want: `{"P":7,"Q":8,"R":9}`},
 	}
-
-	for _, tt := range tests {
+	for _, n := range rand.Perm(len(tests)) {
+		tt := tests[n]
 		t.Run(tt.name, func(t *testing.T) {
 			got, gotErr := na01.Stringify(tt.data)
 			if gotErr != nil {
