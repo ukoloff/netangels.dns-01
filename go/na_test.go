@@ -11,3 +11,7 @@ func TestAuth(t *testing.T) {
 		panic("Empty token")
 	}
 }
+
+func TestZones(t *testing.T) {
+	na01.Zones()
+}

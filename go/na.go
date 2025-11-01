@@ -2,6 +2,7 @@ package na01
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"os"
@@ -33,4 +34,43 @@ func Auth() (string, error) {
 		return "", err
 	}
 	return jj.Token, nil
+}
+
+type Zone struct {
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Comment  string `json:"comment"`
+	Count    int    `json:"records_count"`
+	TTL      int    `json:"ttl"`
+	Email    string `json:"soa_email"`
+	Transfer bool   `json:"is_in_transfer"`
+	Tech     bool   `json:"is_technical_zone"`
+	DNS      any    `json:"secondary_dns"`
+}
+
+func Zones() {
+	token, err := Auth()
+	if err != nil {
+		panic(err)
+	}
+	client := &http.Client{}
+	req, err := http.NewRequest(http.MethodGet, API+"/zones", http.NoBody)
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Add("Authorization", "Bearer "+token)
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	var r struct {
+		Count int    `json:"count"`
+		List  []Zone `json:"entities"`
+	}
+	err = json.NewDecoder(resp.Body).Decode(&r)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(r)
 }
