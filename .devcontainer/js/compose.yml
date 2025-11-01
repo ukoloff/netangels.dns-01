@@ -1,4 +1,4 @@
-name: na01
+name: na01.js
 
 services:
   dev:
@@ -9,9 +9,9 @@ services:
     command:
       - sleep
       - infinity
-    stop_signal: SIGKILL
+    init: true
     env_file:
-      - .env
+      - ../.env
 
 volumes:
   repo:
