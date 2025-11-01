@@ -1,4 +1,4 @@
-package na01
+package main
 
 import "encoding/json"
 
