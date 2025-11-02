@@ -51,7 +51,7 @@ func Zones() ([]Zone, error) {
 		return nil, err
 	}
 	client := &http.Client{}
-	req, err := http.NewRequest(http.MethodGet, API+"/zones", http.NoBody)
+	req, err := http.NewRequest(http.MethodGet, API+"/zones", nil)
 	if err != nil {
 		return nil, err
 	}
