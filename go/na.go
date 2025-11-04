@@ -120,11 +120,27 @@ type Zone struct {
 }
 
 type RR struct {
-	ID   int            `json:"id"`
-	Zone int            `json:"zone_id"`
-	Name string         `json:"name"`
-	Type string         `json:"type"`
-	Data map[string]any `json:"details"`
+	ID   int            `json:"id,omitzero"`
+	Zone int            `json:"zone_id,omitzero"`
+	Name string         `json:"name,omitzero"`
+	Type string         `json:"type,omitzero"`
+	TTL  int            `json:"ttl,omitzero"`
+	Data map[string]any `json:"details,omitzero"`
+}
+
+type RRa struct {
+	RR
+	IP string `json:"ip"`
+}
+
+type RRtxt struct {
+	RR
+	Value string `json:"value"`
+}
+
+type RRcname struct {
+	RR
+	Domain string `json:"domain"`
 }
 
 func Zones() ([]Zone, error) {
