@@ -51,9 +51,8 @@ func TestNewZone(t *testing.T) {
 	if err != nil {
 		t.Fatal("Creation failed", err)
 	}
-	removed := false
 	defer func() {
-		if removed {
+		if z.ID == 0 {
 			return
 		}
 		na01.DropZone(z.ID)
@@ -67,9 +66,9 @@ func TestNewZone(t *testing.T) {
 	if err != nil {
 		t.Fatal("Destroy failed", err)
 	}
-	removed = true
 
 	z.ID = 0
+
 	if !reflect.DeepEqual(z, z2) {
 		t.Errorf("Zone mismatch: %v != %v", z, z2)
 	}

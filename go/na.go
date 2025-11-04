@@ -143,5 +143,4 @@ func DropZone(id int) (Zone, error) {
 	var z Zone
 	err := api{path: "zones/" + strconv.Itoa(id), method: http.MethodDelete, out: &z}.invoke()
 	return z, err
-
 }
