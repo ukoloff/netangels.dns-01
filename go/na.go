@@ -105,17 +105,15 @@ type entities[T any] struct {
 }
 
 type Zone struct {
-	ID       int    `json:"id,omitzero"`
-	Name     string `json:"name"`
-	Comment  string `json:"comment,omitzero"`
-	Count    int    `json:"records_count,omitzero"`
-	TTL      int    `json:"ttl,omitzero"`
-	Email    string `json:"soa_email,omitzero"`
-	Transfer bool   `json:"is_in_transfer,omitzero"`
-	Tech     bool   `json:"is_technical_zone,omitzero"`
-	DNS      struct {
-		List []string `json:"entities"`
-	} `json:"secondary_dns,omitzero"`
+	ID       int                `json:"id,omitzero"`
+	Name     string             `json:"name"`
+	Comment  string             `json:"comment,omitzero"`
+	Count    int                `json:"records_count,omitzero"`
+	TTL      int                `json:"ttl,omitzero"`
+	Email    string             `json:"soa_email,omitzero"`
+	Transfer bool               `json:"is_in_transfer,omitzero"`
+	Tech     bool               `json:"is_technical_zone,omitzero"`
+	DNS      entities[[]string] `json:"secondary_dns,omitzero"`
 }
 
 type RR struct {
