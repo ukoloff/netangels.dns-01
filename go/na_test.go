@@ -36,7 +36,7 @@ func TestZones(t *testing.T) {
 }
 
 func TestNewZone(t *testing.T) {
-	z, err := na01.NewZone("test-35754525346656.ru")
+	z, err := na01.NewZone("test-" + na01.RandomString(7) + ".ru")
 	if err != nil {
 		t.Fatal("Creation failed")
 	}
