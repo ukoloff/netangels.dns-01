@@ -185,3 +185,9 @@ func ZoneRRs(id int) ([]RR, error) {
 	}
 	return result, nil
 }
+
+func NewRR(rr any) (RR, error) {
+	var res RR
+	err := api{path: "records", method: http.MethodPost, in: rr, out: &res}.invoke()
+	return res, err
+}

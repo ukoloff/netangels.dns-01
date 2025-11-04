@@ -83,3 +83,43 @@ func TestNewZone(t *testing.T) {
 		t.Fatal("Cannot decrement Zone count")
 	}
 }
+
+func TestNewRR(t *testing.T) {
+	z, err := na01.NewZone("test-" + na01.RandomString(7) + ".com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		na01.DropZone(z.ID)
+	}()
+	t.Run("TXT", func(t *testing.T) {
+		r := na01.RRtxt{
+			RR: na01.RR{
+				Name: na01.RandomString(5) + "." + z.Name,
+				Type: "TXT",
+				TTL:  300,
+			},
+			Value: "Preved!",
+		}
+		res, err := na01.NewRR(r)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Log(res)
+	})
+	t.Run("A", func(t *testing.T) {
+		r := na01.RRa{
+			RR: na01.RR{
+				Name: na01.RandomString(5) + "." + z.Name,
+				Type: "A",
+				// TTL:  400,
+			},
+			IP: "3.2.1.0",
+		}
+		res, err := na01.NewRR(r)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Log(res)
+	})
+}
