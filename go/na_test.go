@@ -1,7 +1,6 @@
 package na01_test
 
 import (
-	"fmt"
 	"na01"
 	"reflect"
 	"testing"
@@ -36,9 +35,45 @@ func TestZones(t *testing.T) {
 }
 
 func TestNewZone(t *testing.T) {
-	z, err := na01.NewZone("test-" + na01.RandomString(7) + ".ru")
-	if err != nil {
-		t.Fatal("Creation failed")
+	zname := "test-" + na01.RandomString(7) + ".ru"
+
+	read := func() int {
+		zones, err := na01.Zones()
+		if err != nil {
+			t.Errorf("Reading failed: %v", err)
+		}
+		return len(zones)
 	}
-	fmt.Println(z)
+	count := read()
+
+	z, err := na01.NewZone(zname)
+
+	if err != nil {
+		t.Fatal("Creation failed", err)
+	}
+	removed := false
+	defer func() {
+		if removed {
+			return
+		}
+		na01.DropZone(z.ID)
+	}()
+
+	if read() != count+1 {
+		t.Fatal("Cannot increment Zone count")
+	}
+
+	z2, err := na01.DropZone(z.ID)
+	if err != nil {
+		t.Fatal("Destroy failed", err)
+	}
+	removed = true
+
+	z.ID = 0
+	if !reflect.DeepEqual(z, z2) {
+		t.Errorf("Zone mismatch: %v != %v", z, z2)
+	}
+	if read() != count {
+		t.Fatal("Cannot decrement Zone count")
+	}
 }

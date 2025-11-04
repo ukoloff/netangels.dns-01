@@ -138,3 +138,10 @@ func NewZone(name string) (Zone, error) {
 	err := api{path: "zones", method: http.MethodPost, in: in, out: &out}.invoke()
 	return out, err
 }
+
+func DropZone(id int) (Zone, error) {
+	var z Zone
+	err := api{path: "zones/" + strconv.Itoa(id), method: http.MethodDelete, out: &z}.invoke()
+	return z, err
+
+}
