@@ -156,7 +156,19 @@ func DropZone(id int) (Zone, error) {
 }
 
 func ZoneRRs(id int) ([]RR, error) {
-	var r entities[RR]
-	err := api{path: "zones/" + strconv.Itoa(id) + "/records/?limit=100", out: &r}.invoke()
-	return r.List, err
+	var result []RR
+	for {
+		var r entities[RR]
+		err := api{
+			path: "zones/" + strconv.Itoa(id) + "/records/?offset=" + strconv.Itoa(len(result)),
+			out:  &r}.invoke()
+		if err != nil {
+			return nil, err
+		}
+		if len(r.List) == 0 {
+			break
+		}
+		result = append(result, r.List...)
+	}
+	return result, nil
 }
