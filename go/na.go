@@ -3,6 +3,7 @@ package na01
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/url"
@@ -40,42 +41,57 @@ type api struct {
 	out    any
 }
 
+var token string
+
 func (entry api) invoke() error {
-	token, err := Auth()
-	if err != nil {
-		return err
-	}
-	method := entry.method
-	if len(method) == 0 {
-		method = http.MethodGet
-	}
-	var in io.Reader = http.NoBody
-	if entry.in != nil {
-		data, err := json.Marshal(entry.in)
+	for stage := range 2 {
+		if len(token) == 0 {
+			t, err := Auth()
+			if err != nil {
+				return err
+			}
+			token = t
+		}
+		method := entry.method
+		if len(method) == 0 {
+			method = http.MethodGet
+		}
+		var in io.Reader
+		if entry.in != nil {
+			data, err := json.Marshal(entry.in)
+			if err != nil {
+				return err
+			}
+			in = bytes.NewBuffer(data)
+		}
+		req, err := http.NewRequest(method, API+entry.path, in)
 		if err != nil {
 			return err
 		}
-		in = bytes.NewBuffer(data)
-	}
-	req, err := http.NewRequest(method, API+entry.path, in)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Authorization", "Bearer "+token)
-	if entry.in != nil {
-		req.Header.Set("Content-Type", "application/json")
-	}
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	if entry.out != nil {
-		err = json.NewDecoder(resp.Body).Decode(entry.out)
+		req.Header.Set("Authorization", "Bearer "+token)
+		if entry.in != nil {
+			req.Header.Set("Content-Type", "application/json")
+		}
+		client := &http.Client{}
+		resp, err := client.Do(req)
 		if err != nil {
 			return err
 		}
+		defer resp.Body.Close()
+		if resp.StatusCode == 403 {
+			if stage == 0 {
+				token = ""
+				continue
+			}
+			return errors.New("Authentication failed")
+		}
+		if entry.out != nil {
+			err = json.NewDecoder(resp.Body).Decode(entry.out)
+			if err != nil {
+				return err
+			}
+		}
+		break
 	}
 	return nil
 }
