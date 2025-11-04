@@ -84,7 +84,6 @@ func (entry api) invoke() error {
 				token = ""
 				continue
 			}
-			return errors.New("Authentication failed / 403")
 		}
 		if resp.StatusCode >= 300 {
 			return errors.New("HTTP Error: " + strconv.Itoa(resp.StatusCode))

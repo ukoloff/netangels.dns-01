@@ -19,7 +19,7 @@ func TestAuth(t *testing.T) {
 func TestZones(t *testing.T) {
 	zones, err := na01.Zones()
 	if err != nil {
-		panic(err)
+		t.Errorf("Cannot list zones: %v", err)
 	}
 	for _, z := range zones {
 		t.Run("Fetch zone: "+z.Name, func(t *testing.T) {
