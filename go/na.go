@@ -84,10 +84,13 @@ func (entry api) invoke() error {
 				token = ""
 				continue
 			}
-			return errors.New("Authentication failed")
+			return errors.New("Authentication failed / 403")
+		}
+		if resp.StatusCode >= 300 {
+			return errors.New("HTTP Error: " + strconv.Itoa(resp.StatusCode))
 		}
 		if entry.out != nil {
-			err = json.NewDecoder(resp.Body).Decode(entry.out)
+			err := json.NewDecoder(resp.Body).Decode(entry.out)
 			if err != nil {
 				return err
 			}
