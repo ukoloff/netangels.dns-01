@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 )
 
 const (
@@ -120,4 +121,10 @@ func Zones() ([]Zone, error) {
 		return nil, err
 	}
 	return r.List, nil
+}
+
+func GetZone(id int) (Zone, error) {
+	var z Zone
+	err := api{path: "zones/" + strconv.Itoa(id), out: &z}.invoke()
+	return z, err
 }
