@@ -1,7 +1,9 @@
 package na01
 
 import (
+	"bytes"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -31,6 +33,53 @@ func Auth() (string, error) {
 	return jj.Token, nil
 }
 
+type api struct {
+	path   string
+	method string
+	in     any
+	out    any
+}
+
+func (entry api) invoke() error {
+	token, err := Auth()
+	if err != nil {
+		return err
+	}
+	method := entry.method
+	if len(method) == 0 {
+		method = http.MethodGet
+	}
+	var in io.Reader = http.NoBody
+	if entry.in != nil {
+		data, err := json.Marshal(entry.in)
+		if err != nil {
+			return err
+		}
+		in = bytes.NewBuffer(data)
+	}
+	req, err := http.NewRequest(method, API+entry.path, in)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+	if entry.in != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if entry.out != nil {
+		err = json.NewDecoder(resp.Body).Decode(entry.out)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 type Zone struct {
 	ID       int    `json:"id"`
 	Name     string `json:"name"`
@@ -46,26 +95,11 @@ type Zone struct {
 }
 
 func Zones() ([]Zone, error) {
-	token, err := Auth()
-	if err != nil {
-		return nil, err
-	}
-	client := &http.Client{}
-	req, err := http.NewRequest(http.MethodGet, API+"/zones", nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Add("Authorization", "Bearer "+token)
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
 	var r struct {
 		Count int    `json:"count"`
 		List  []Zone `json:"entities"`
 	}
-	err = json.NewDecoder(resp.Body).Decode(&r)
+	err := api{path: "zones", out: &r}.invoke()
 	if err != nil {
 		return nil, err
 	}
