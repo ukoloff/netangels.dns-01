@@ -30,6 +30,13 @@ func TestZones(t *testing.T) {
 			if !reflect.DeepEqual(zone, z) {
 				t.Errorf("Zone mismatch: %v != %v", zone, z)
 			}
+			rrs, err := na01.ZoneRRs(z.ID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if zone.Count != len(rrs) {
+				t.Errorf("Count mismatch: %v != %v", zone.Count, len(rrs))
+			}
 		})
 	}
 }

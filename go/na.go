@@ -100,6 +100,11 @@ func (entry api) invoke() error {
 	return nil
 }
 
+type entities[T any] struct {
+	Count int `json:"count"`
+	List  []T `json:"entities"`
+}
+
 type Zone struct {
 	ID       int    `json:"id,omitzero"`
 	Name     string `json:"name"`
@@ -114,11 +119,16 @@ type Zone struct {
 	} `json:"secondary_dns,omitzero"`
 }
 
+type RR struct {
+	ID   int            `json:"id"`
+	Zone int            `json:"zone_id"`
+	Name string         `json:"name"`
+	Type string         `json:"type"`
+	Data map[string]any `json:"details"`
+}
+
 func Zones() ([]Zone, error) {
-	var r struct {
-		Count int    `json:"count"`
-		List  []Zone `json:"entities"`
-	}
+	var r entities[Zone]
 	err := api{path: "zones", out: &r}.invoke()
 	if err != nil {
 		return nil, err
@@ -143,4 +153,10 @@ func DropZone(id int) (Zone, error) {
 	var z Zone
 	err := api{path: "zones/" + strconv.Itoa(id), method: http.MethodDelete, out: &z}.invoke()
 	return z, err
+}
+
+func ZoneRRs(id int) ([]RR, error) {
+	var r entities[RR]
+	err := api{path: "zones/" + strconv.Itoa(id) + "/records/?limit=100", out: &r}.invoke()
+	return r.List, err
 }
