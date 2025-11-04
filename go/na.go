@@ -98,17 +98,17 @@ func (entry api) invoke() error {
 }
 
 type Zone struct {
-	ID       int    `json:"id"`
+	ID       int    `json:"id,omitzero"`
 	Name     string `json:"name"`
-	Comment  string `json:"comment"`
-	Count    int    `json:"records_count"`
-	TTL      int    `json:"ttl"`
-	Email    string `json:"soa_email"`
-	Transfer bool   `json:"is_in_transfer"`
-	Tech     bool   `json:"is_technical_zone"`
+	Comment  string `json:"comment,omitzero"`
+	Count    int    `json:"records_count,omitzero"`
+	TTL      int    `json:"ttl,omitzero"`
+	Email    string `json:"soa_email,omitzero"`
+	Transfer bool   `json:"is_in_transfer,omitzero"`
+	Tech     bool   `json:"is_technical_zone,omitzero"`
 	DNS      struct {
 		List []string `json:"entities"`
-	} `json:"secondary_dns"`
+	} `json:"secondary_dns,omitzero"`
 }
 
 func Zones() ([]Zone, error) {
@@ -127,4 +127,11 @@ func GetZone(id int) (Zone, error) {
 	var z Zone
 	err := api{path: "zones/" + strconv.Itoa(id), out: &z}.invoke()
 	return z, err
+}
+
+func NewZone(name string) (Zone, error) {
+	in := Zone{Name: name}
+	var out Zone
+	err := api{path: "zones", method: http.MethodPost, in: in, out: &out}.invoke()
+	return out, err
 }

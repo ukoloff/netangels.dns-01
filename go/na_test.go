@@ -1,6 +1,7 @@
 package na01_test
 
 import (
+	"fmt"
 	"na01"
 	"reflect"
 	"testing"
@@ -32,4 +33,12 @@ func TestZones(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestNewZone(t *testing.T) {
+	z, err := na01.NewZone("test-35754525346656.ru")
+	if err != nil {
+		t.Fatal("Creation failed")
+	}
+	fmt.Println(z)
 }
