@@ -30,12 +30,11 @@ func Cli() {
 	if len(args) != 4 {
 		help()
 	}
-	fmt.Println(args)
 	err := action(args[2], args[3])
 	if err == nil {
 		return
 	}
-	fmt.Println(">>>", err)
+	fmt.Println(err)
 	os.Exit(1)
 }
 
