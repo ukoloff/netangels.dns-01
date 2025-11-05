@@ -227,10 +227,14 @@ func FindRRs(name string) ([]RR, error) {
 	return result, nil
 }
 
+func cleanDomain(fqdn string) string {
+	return strings.TrimRight(fqdn, ".")
+}
+
 func Present(fqdn, text string) error {
 	rr := RRtxt{
 		RR: RR{
-			Name: fqdn,
+			Name: cleanDomain(fqdn),
 			Type: "TXT",
 		},
 		Value: text,
@@ -240,7 +244,7 @@ func Present(fqdn, text string) error {
 }
 
 func CleanUp(fqdn, text string) error {
-	rrs, err := FindRRs(fqdn)
+	rrs, err := FindRRs(cleanDomain(fqdn))
 	if err != nil {
 		return err
 	}
