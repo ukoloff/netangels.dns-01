@@ -11,7 +11,8 @@
       "extensions": [
         "golang.go",
         "mhutchie.git-graph",
-        "EditorConfig.EditorConfig"
+        "EditorConfig.EditorConfig",
+        "fabiospampinato.vscode-open-in-github"
       ]
     }
   }
