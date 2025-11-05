@@ -121,7 +121,8 @@ func TestNewRR(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			v := reflect.ValueOf(test.data).Elem()
 			v.FieldByName("Type").SetString(test.name)
-			v.FieldByName("Name").SetString("rr-" + na01.RandomString(5) + "." + z.Name)
+			newName := "rr-" + na01.RandomString(5) + "." + z.Name
+			v.FieldByName("Name").SetString(newName)
 
 			res, err := na01.NewRR(test.data)
 			if err != nil {
@@ -134,6 +135,16 @@ func TestNewRR(t *testing.T) {
 				t.Fatal("Invalid record type created")
 			}
 
+			found, err := na01.FindRRs(newName)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(found) != 1 {
+				t.Fatal("Failed to find new RR")
+			}
+			if found[0].Name != res.Name || found[0].Type != test.name {
+				t.Fatal("Invalid RR found")
+			}
 			res, err = na01.DropRR(res.ID)
 			if err != nil {
 				t.Fatal(err)

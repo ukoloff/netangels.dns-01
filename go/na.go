@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -196,4 +197,32 @@ func DropRR(id int) (RR, error) {
 	var res RR
 	err := api{path: "records/" + strconv.Itoa(id), method: http.MethodDelete, out: &res}.invoke()
 	return res, err
+}
+
+func (z *Zone) Contains(name string) bool {
+	return z.Name == name || strings.HasSuffix(name, "."+z.Name)
+}
+
+func FindRRs(name string) ([]RR, error) {
+	var result []RR
+	zones, err := Zones()
+	if err != nil {
+		return nil, err
+	}
+	name = strings.ToLower(name)
+	for _, zone := range zones {
+		if !zone.Contains(name) {
+			continue
+		}
+		rrs, err := ZoneRRs(zone.ID)
+		if err != nil {
+			return nil, err
+		}
+		for _, rr := range rrs {
+			if rr.Name == name {
+				result = append(result, rr)
+			}
+		}
+	}
+	return result, nil
 }
