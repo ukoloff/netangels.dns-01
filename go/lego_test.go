@@ -4,6 +4,7 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"na01"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -31,7 +32,20 @@ func TestLego(t *testing.T) {
 	})
 
 	t.Run("www", func(t *testing.T) {
-		//
+		cmd := exec.Command(me, "www")
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err := cmd.Start()
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer func() {
+			resp, err := http.Get("http://localhost/quit")
+			if err != nil {
+				return
+			}
+			resp.Body.Close()
+		}()
 	})
 }
 
