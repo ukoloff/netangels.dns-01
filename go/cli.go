@@ -11,13 +11,31 @@ func Cli() {
 	if len(args) < 2 {
 		help()
 	}
+
+	var action func(string, string) error
+
 	switch args[1] {
 	case "present":
+		action = Present
 	case "cleanup":
+		action = CleanUp
 	case "www":
+		println("WWW...")
 	default:
 		help()
 	}
+	if action == nil {
+		return
+	}
+	if len(args) != 4 {
+		help()
+	}
+	err := action(args[2], args[3])
+	if err == nil {
+		return
+	}
+	fmt.Println(err)
+	os.Exit(1)
 }
 
 func help() {
