@@ -153,3 +153,41 @@ func TestNewRR(t *testing.T) {
 		})
 	}
 }
+
+func TestPresent(t *testing.T) {
+	z, err := na01.NewZone("final-" + na01.RandomString(7) + ".com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		na01.DropZone(z.ID)
+	}()
+
+	getCount := func() int {
+		rrs, err := na01.ZoneRRs(z.ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return len(rrs)
+	}
+	count := getCount()
+	checkCount := func(delta int) {
+		if count+delta == getCount() {
+			return
+		}
+		t.Fatal("Failed to change records count")
+	}
+
+	fqdn := "acme-" + na01.RandomString(5) + "." + z.Name
+	value := na01.RandomString(12)
+	err = na01.Present(fqdn, value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	checkCount(+1)
+	err = na01.CleanUp(fqdn, value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	checkCount(0)
+}

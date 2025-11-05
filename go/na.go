@@ -226,3 +226,37 @@ func FindRRs(name string) ([]RR, error) {
 	}
 	return result, nil
 }
+
+func Present(fqdn, text string) error {
+	rr := RRtxt{
+		RR: RR{
+			Name: fqdn,
+			Type: "TXT",
+		},
+		Value: text,
+	}
+	_, err := NewRR(rr)
+	return err
+}
+
+func CleanUp(fqdn, text string) error {
+	rrs, err := FindRRs(fqdn)
+	if err != nil {
+		return err
+	}
+	count := 0
+	for _, rr := range rrs {
+		if rr.Type != "TXT" || rr.Data["value"] != text {
+			continue
+		}
+		_, err := DropRR(rr.ID)
+		if err != nil {
+			return err
+		}
+		count++
+	}
+	if count == 0 {
+		return errors.New("no RRs found")
+	}
+	return nil
+}
