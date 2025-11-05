@@ -9,7 +9,7 @@ import (
 
 func TestLego(t *testing.T) {
 	me := exePath()
-	cmd := exec.Command("go", "build", "-C", "main", "-o", me)
+	cmd := exec.Command("go", "build", "-C", "main", "-ldflags", "-s -w", "-o", me)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
