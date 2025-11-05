@@ -191,3 +191,9 @@ func NewRR(rr any) (RR, error) {
 	err := api{path: "records", method: http.MethodPost, in: rr, out: &res}.invoke()
 	return res, err
 }
+
+func DropRR(id int) (RR, error) {
+	var res RR
+	err := api{path: "records/" + strconv.Itoa(id), method: http.MethodDelete, out: &res}.invoke()
+	return res, err
+}

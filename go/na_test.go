@@ -112,7 +112,11 @@ func TestNewRR(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			t.Log(res)
+
+			res, err = na01.DropRR(res.ID)
+			if err != nil {
+				t.Fatal(err)
+			}
 		})
 	}
 }
