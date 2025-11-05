@@ -102,6 +102,21 @@ func TestNewRR(t *testing.T) {
 		na01.DropZone(z.ID)
 	}()
 
+	getCount := func() int {
+		rrs, err := na01.ZoneRRs(z.ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return len(rrs)
+	}
+	count := getCount()
+	checkCount := func(delta int) {
+		if count+delta == getCount() {
+			return
+		}
+		t.Fatal("Failed to change records count")
+	}
+
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			v := reflect.ValueOf(test.data).Elem()
@@ -113,10 +128,17 @@ func TestNewRR(t *testing.T) {
 				t.Fatal(err)
 			}
 
+			checkCount(+1)
+
+			if res.Type != test.name {
+				t.Fatal("Invalid record type created")
+			}
+
 			res, err = na01.DropRR(res.ID)
 			if err != nil {
 				t.Fatal(err)
 			}
+			checkCount(0)
 		})
 	}
 }
