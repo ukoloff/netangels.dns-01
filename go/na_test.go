@@ -85,6 +85,15 @@ func TestNewZone(t *testing.T) {
 }
 
 func TestNewRR(t *testing.T) {
+	tests := []struct {
+		name string
+		data any
+	}{
+		{name: "A", data: &na01.RRa{IP: "3.2.1.0"}},
+		{name: "TXT", data: &na01.RRtxt{Value: "Preved, medved!"}},
+		{name: "CNAME", data: &na01.RRcname{Domain: "ya.ru"}},
+	}
+
 	z, err := na01.NewZone("test-" + na01.RandomString(7) + ".com")
 	if err != nil {
 		t.Fatal(err)
@@ -92,34 +101,18 @@ func TestNewRR(t *testing.T) {
 	defer func() {
 		na01.DropZone(z.ID)
 	}()
-	t.Run("TXT", func(t *testing.T) {
-		r := na01.RRtxt{
-			RR: na01.RR{
-				Name: na01.RandomString(5) + "." + z.Name,
-				Type: "TXT",
-				TTL:  300,
-			},
-			Value: "Preved!",
-		}
-		res, err := na01.NewRR(r)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Log(res)
-	})
-	t.Run("A", func(t *testing.T) {
-		r := na01.RRa{
-			RR: na01.RR{
-				Name: na01.RandomString(5) + "." + z.Name,
-				Type: "A",
-				// TTL:  400,
-			},
-			IP: "3.2.1.0",
-		}
-		res, err := na01.NewRR(r)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Log(res)
-	})
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			v := reflect.ValueOf(test.data).Elem()
+			v.FieldByName("Type").SetString(test.name)
+			v.FieldByName("Name").SetString("rr-" + na01.RandomString(5) + "." + z.Name)
+
+			res, err := na01.NewRR(test.data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Log(res)
+		})
+	}
 }
