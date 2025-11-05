@@ -9,7 +9,6 @@ import (
 
 func TestLego(t *testing.T) {
 	me := exePath()
-
 	cmd := exec.Command("go", "build", "-C", "main", "-o", me)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -17,8 +16,8 @@ func TestLego(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	defer os.Remove(me)
+
 	t.Run("cli", func(t *testing.T) {
 		cmd := exec.Command(me)
 		cmd.Stdout = os.Stdout
