@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestLego(t *testing.T) {
@@ -40,13 +41,15 @@ func TestLego(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		time.Sleep(108 * time.Millisecond)
 		defer func() {
 			resp, err := http.Get("http://localhost/quit")
 			if err != nil {
 				return
 			}
 			resp.Body.Close()
-			cmd.Wait()
+			// cmd.Process.Kill()
+			// cmd.Wait()
 		}()
 	})
 }
