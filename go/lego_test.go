@@ -3,6 +3,7 @@ package na01_test
 import (
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
 	"na01"
 	"net/http"
 	"os"
@@ -26,11 +27,14 @@ func TestLego(t *testing.T) {
 
 	t.Run("cli", func(t *testing.T) {
 		t.SkipNow()
-		lego(t, "exec", map[string]string{
+		err := lego("exec", map[string]string{
 			"EXEC_PATH":                me,
 			"EXEC_POLLING_INTERVAL":    "10",
 			"EXEC_PROPAGATION_TIMEOUT": "300",
 		})
+		if err != nil {
+			t.Fatal(err)
+		}
 	})
 
 	t.Run("www", func(t *testing.T) {
@@ -62,7 +66,7 @@ func exePath() string {
 	return f.Name()
 }
 
-func lego(t *testing.T, provider string, env map[string]string) error {
+func lego(provider string, env map[string]string) error {
 	domain := strings.ToLower(na01.RandomString(7) + "." + provider + ".uralhimmash.com")
 
 	cmd := exec.Command("lego", "-a",
@@ -82,33 +86,37 @@ func lego(t *testing.T, provider string, env map[string]string) error {
 	cmd.Env = e
 	err := cmd.Run()
 	if err != nil {
-		t.Fatal(err)
+		return err
 	}
+	err = x509check(domain)
+	return err
+}
 
+func x509check(domain string) error {
 	for _, ext := range []string{"key", "pfx", "crt", "json"} {
 		_, err := os.Stat("./.lego/certificates/" + domain + "." + ext)
 		if err != nil {
-			t.Fatal(err)
+			return err
 		}
 	}
 
 	blob, err := os.ReadFile("./.lego/certificates/" + domain + ".crt")
 	if err != nil {
-		t.Fatal(err)
+		return err
 	}
 	der, _ := pem.Decode(blob)
 	crt, err := x509.ParseCertificate(der.Bytes)
 	if err != nil {
-		t.Fatal(err)
+		return err
 	}
 	if crt.Subject.CommonName != domain {
-		t.Fatal("Invalid CN")
+		return errors.New("Invalid CN")
 	}
 	if crt.DNSNames[0] != domain {
-		t.Fatal("Invalid AltName")
+		return errors.New("Invalid AltName")
 	}
 	if crt.SerialNumber == nil {
-		t.Fatal("Empty Serial")
+		return errors.New("Empty Serial")
 	}
 	return nil
 }
