@@ -12,5 +12,8 @@ func RandomString(n int) string {
 	if err != nil {
 		panic(err)
 	}
-	return strings.ReplaceAll(base64.RawURLEncoding.EncodeToString(b), "_", "-")
+	return strings.Trim(
+		strings.ReplaceAll(
+			base64.RawURLEncoding.EncodeToString(b),
+			"_", "-"), "-")
 }
