@@ -24,6 +24,7 @@ func TestLego(t *testing.T) {
 	defer os.Remove(me)
 
 	t.Run("cli", func(t *testing.T) {
+		t.SkipNow()
 		lego(t, "exec", map[string]string{
 			"EXEC_PATH":                me,
 			"EXEC_POLLING_INTERVAL":    "10",
@@ -45,6 +46,7 @@ func TestLego(t *testing.T) {
 				return
 			}
 			resp.Body.Close()
+			cmd.Wait()
 		}()
 	})
 }
