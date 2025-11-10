@@ -2,10 +2,9 @@ package na01
 
 import (
 	"fmt"
-	"net/http"
+	"log"
 	"os"
 	"path/filepath"
-	"time"
 )
 
 func Cli() {
@@ -22,7 +21,9 @@ func Cli() {
 	case "cleanup":
 		action = CleanUp
 	case "www":
-		www()
+		if err := Start(); err != nil {
+			log.Fatal(err)
+		}
 	default:
 		help()
 	}
@@ -49,37 +50,4 @@ func help() {
   %[1]v www               - Start Web server
 `, me)
 	os.Exit(1)
-}
-
-func www() {
-	http.HandleFunc("/alive", alive)
-	http.HandleFunc("/quit", quit)
-	http.HandleFunc("/present", handler)
-	http.HandleFunc("/cleanup", handler)
-	http.HandleFunc("/", fallback)
-	err := http.ListenAndServe("", nil)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func alive(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "ok")
-}
-
-func quit(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Bye!")
-	c := time.After(1 * time.Second)
-	go func() {
-		<-c
-		os.Exit(0)
-	}()
-}
-
-func fallback(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "https://github.com/ukoloff/netangels.dns-01", http.StatusMovedPermanently)
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, r.URL)
 }
