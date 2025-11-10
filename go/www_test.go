@@ -15,6 +15,8 @@ func TestWWW(t *testing.T) {
 			panic(err)
 		}
 	}()
+	defer na01.Stop()
+
 	resp, err := http.Get(URL + "alive")
 	if err != nil {
 		t.Fatal(err)
@@ -30,5 +32,4 @@ func TestWWW(t *testing.T) {
 	if string(b) != "Ok" {
 		t.Fatal("Health Check failed")
 	}
-	defer na01.Stop()
 }
