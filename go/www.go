@@ -36,6 +36,5 @@ func Start() error {
 }
 
 func Stop() error {
-	fmt.Print("Exiting...")
 	return server.Shutdown(context.Background())
 }
