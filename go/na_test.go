@@ -98,9 +98,7 @@ func TestNewRR(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer func() {
-		na01.DropZone(z.ID)
-	}()
+	defer na01.DropZone(z.ID)
 
 	getCount := func() int {
 		rrs, err := na01.ZoneRRs(z.ID)
@@ -159,9 +157,7 @@ func TestPresent(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer func() {
-		na01.DropZone(z.ID)
-	}()
+	defer na01.DropZone(z.ID)
 
 	getCount := func() int {
 		rrs, err := na01.ZoneRRs(z.ID)
