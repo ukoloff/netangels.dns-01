@@ -231,7 +231,7 @@ func cleanDomain(fqdn string) string {
 	return strings.TrimRight(fqdn, ".")
 }
 
-func Present(fqdn, text string) error {
+func Present(fqdn, text string) (RR, error) {
 	rr := RRtxt{
 		RR: RR{
 			Name: cleanDomain(fqdn),
@@ -239,28 +239,27 @@ func Present(fqdn, text string) error {
 		},
 		Value: text,
 	}
-	_, err := NewRR(rr)
-	return err
+	return NewRR(rr)
 }
 
-func CleanUp(fqdn, text string) error {
+func CleanUp(fqdn, text string) ([]RR, error) {
 	rrs, err := FindRRs(cleanDomain(fqdn))
 	if err != nil {
-		return err
+		return nil, err
 	}
-	count := 0
+	var result []RR
 	for _, rr := range rrs {
 		if rr.Type != "TXT" || rr.Data["value"] != text {
 			continue
 		}
 		_, err := DropRR(rr.ID)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		count++
+		result = append(result, rr)
 	}
-	if count == 0 {
-		return errors.New("no RRs found")
+	if len(result) == 0 {
+		return nil, errors.New("no RRs found")
 	}
-	return nil
+	return result, nil
 }

@@ -180,12 +180,12 @@ func TestPresent(t *testing.T) {
 
 	fqdn := "acme-" + na01.RandomString(5) + "." + z.Name
 	value := na01.RandomString(12)
-	err = na01.Present(fqdn, value)
+	_, err = na01.Present(fqdn, value)
 	if err != nil {
 		t.Fatal(err)
 	}
 	checkCount(+1)
-	err = na01.CleanUp(fqdn, value)
+	_, err = na01.CleanUp(fqdn, value)
 	if err != nil {
 		t.Fatal(err)
 	}

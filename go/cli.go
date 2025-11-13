@@ -17,9 +17,9 @@ func Cli() {
 
 	switch args[1] {
 	case "present":
-		action = Present
+		action = wrapPresent
 	case "cleanup":
-		action = CleanUp
+		action = wrapCleanUp
 	case "www":
 		if err := Start(); err != nil {
 			log.Fatal(err)
@@ -50,4 +50,14 @@ func help() {
   %[1]v www               - Start Web server
 `, me)
 	os.Exit(1)
+}
+
+func wrapPresent(fqdn, text string) error {
+	_, err := Present(fqdn, text)
+	return err
+}
+
+func wrapCleanUp(fqdn, text string) error {
+	_, err := CleanUp(fqdn, text)
+	return err
 }
