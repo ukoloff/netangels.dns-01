@@ -81,10 +81,10 @@ func present(w http.ResponseWriter, r *http.Request) {
 func cleanup(w http.ResponseWriter, r *http.Request) {
 }
 
-func FirePresent() error {
+func FirePresent(fqdn, text string) error {
 	return nil
 }
 
-func FireCleanUp() error {
+func FireCleanUp(fqdn, text string) error {
 	return nil
 }
