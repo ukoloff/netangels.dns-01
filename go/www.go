@@ -20,20 +20,10 @@ type acmeReq struct {
 
 func Start() error {
 	http.HandleFunc("/alive", alive)
-	http.HandleFunc("/quit", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Bye")
-		go func() {
-			time.Sleep(300 * time.Millisecond)
-			Stop()
-		}()
-	})
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/html")
-		fmt.Fprint(w, `<li><a
-      href="https://github.com/ukoloff/netangels.dns-01.git">Source</a>
-      <li><a href="/alive">Health Check<a>
-      <li><a href="/quit">Quit</a>`)
-	})
+	http.HandleFunc("/quit", quit)
+	http.HandleFunc("/present", present)
+	http.HandleFunc("/cleanup", cleanup)
+	http.HandleFunc("/", home)
 	err := server.ListenAndServe()
 	if err == http.ErrServerClosed {
 		err = nil
@@ -43,6 +33,22 @@ func Start() error {
 
 func Stop() error {
 	return server.Shutdown(context.Background())
+}
+
+func home(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprint(w, `<li><a
+      href="https://github.com/ukoloff/netangels.dns-01.git">Source</a>
+      <li><a href="/alive">Health Check<a>
+      <li><a href="/quit">Quit</a>`)
+}
+
+func quit(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "Bye")
+	go func() {
+		time.Sleep(300 * time.Millisecond)
+		Stop()
+	}()
 }
 
 func alive(w http.ResponseWriter, r *http.Request) {
@@ -57,7 +63,7 @@ func FireAlive() error {
 	}
 	defer resp.Body.Close()
 	if len(resp.Header.Get("X-Health-Check")) == 0 {
-		return errors.New("header not found!")
+		return errors.New("header not found")
 	}
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -66,5 +72,19 @@ func FireAlive() error {
 	if string(b) != "Ok" {
 		return errors.New("health check failed")
 	}
+	return nil
+}
+
+func present(w http.ResponseWriter, r *http.Request) {
+}
+
+func cleanup(w http.ResponseWriter, r *http.Request) {
+}
+
+func FirePresent() error {
+	return nil
+}
+
+func FireCleanUp() error {
 	return nil
 }
