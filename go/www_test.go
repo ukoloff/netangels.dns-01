@@ -5,6 +5,7 @@ import (
 	"na01"
 	"net/http"
 	"testing"
+	"time"
 )
 
 const URL = "http://localhost/"
@@ -17,6 +18,7 @@ func TestWWW(t *testing.T) {
 	}()
 	defer na01.Stop()
 
+	time.Sleep(108 * time.Millisecond)
 	resp, err := http.Get(URL + "alive")
 	if err != nil {
 		t.Fatal(err)

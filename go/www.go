@@ -9,11 +9,13 @@ import (
 
 var server = http.Server{}
 
+type acmeReq struct {
+	FQDN  string `json:"fqdn"`
+	Value string `json:"value"`
+}
+
 func Start() error {
-	http.HandleFunc("/alive", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("X-Health-Check", "+")
-		fmt.Fprint(w, "Ok")
-	})
+	http.HandleFunc("/alive", alive)
 	http.HandleFunc("/quit", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Bye")
 		go func() {
@@ -37,4 +39,9 @@ func Start() error {
 
 func Stop() error {
 	return server.Shutdown(context.Background())
+}
+
+func alive(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("X-Health-Check", "+")
+	fmt.Fprint(w, "Ok")
 }
