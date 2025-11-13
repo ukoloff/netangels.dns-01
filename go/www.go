@@ -2,10 +2,14 @@ package na01
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 )
+
+const URL = "http://localhost/"
 
 var server = http.Server{}
 
@@ -44,4 +48,23 @@ func Stop() error {
 func alive(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Health-Check", "+")
 	fmt.Fprint(w, "Ok")
+}
+
+func FireAlive() error {
+	resp, err := http.Get(URL + "alive")
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if len(resp.Header.Get("X-Health-Check")) == 0 {
+		return errors.New("header not found!")
+	}
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	if string(b) != "Ok" {
+		return errors.New("health check failed")
+	}
+	return nil
 }
