@@ -5,7 +5,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"na01"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -46,15 +45,7 @@ func TestLego(t *testing.T) {
 			t.Fatal(err)
 		}
 		time.Sleep(108 * time.Millisecond)
-		defer func() {
-			resp, err := http.Get("http://localhost/quit")
-			if err != nil {
-				return
-			}
-			resp.Body.Close()
-			// cmd.Process.Kill()
-			// cmd.Wait()
-		}()
+		defer na01.FireQuit()
 	})
 }
 

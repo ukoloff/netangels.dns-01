@@ -151,3 +151,10 @@ func FireCleanUp(fqdn, text string) ([]RR, error) {
 	var rs []RR
 	return rs, fire("cleanup", fqdn, text, &rs)
 }
+
+func FireQuit() {
+	resp, err := http.Get(URL + "quit")
+	if err == nil {
+		resp.Body.Close()
+	}
+}
