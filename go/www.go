@@ -92,6 +92,7 @@ func verb(w http.ResponseWriter, r *http.Request, handler func(in acmeReq) (any,
 	if err != nil {
 		// return err
 	}
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(data)
 }
 
