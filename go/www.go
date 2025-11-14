@@ -134,10 +134,12 @@ func fire(cmd, fqdn, text string, out any) error {
 	return nil
 }
 
-func FirePresent(fqdn, text string, out any) error {
-	return fire("present", fqdn, text, out)
+func FirePresent(fqdn, text string) (RR, error) {
+	var r RR
+	return r, fire("present", fqdn, text, &r)
 }
 
-func FireCleanUp(fqdn, text string, out any) error {
-	return fire("cleanup", fqdn, text, out)
+func FireCleanUp(fqdn, text string) ([]RR, error) {
+	var rs []RR
+	return rs, fire("cleanup", fqdn, text, &rs)
 }
