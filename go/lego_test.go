@@ -12,7 +12,7 @@ import (
 
 const Domain = "uralhimmash.com"
 
-func lego(provider string, env []string) error {
+func lego(provider string, env ...string) error {
 	domain := strings.ToLower(na01.RandomString(7) + "." + provider + "." + Domain)
 
 	cmd := exec.Command("lego", "-a",
