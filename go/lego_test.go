@@ -10,8 +10,10 @@ import (
 	"strings"
 )
 
+const Domain = "uralhimmash.com"
+
 func lego(provider string, env map[string]string) error {
-	domain := strings.ToLower(na01.RandomString(7) + "." + provider + ".uralhimmash.com")
+	domain := strings.ToLower(na01.RandomString(7) + "." + provider + "." + Domain)
 
 	cmd := exec.Command("lego", "-a",
 		"-dns", provider,
