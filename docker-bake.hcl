@@ -10,7 +10,7 @@ target "golang" {
 
     WORKDIR /repo
     COPY ./go/. ./go/.
-    RUN go build -C go/main -o na01
+    RUN go build -C go/main -o na01 -ldflags "-s -w"
 
     FROM gcr.io/distroless/static-debian12
 
