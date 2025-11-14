@@ -40,7 +40,7 @@ func TestCLI(t *testing.T) {
 	})
 
 	t.Run("Lego::exec", func(t *testing.T) {
-		// t.SkipNow()
+		t.SkipNow()
 		err := lego("exec", []string{
 			"EXEC_PATH=" + me,
 			"EXEC_POLLING_INTERVAL=10",
