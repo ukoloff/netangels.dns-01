@@ -24,11 +24,11 @@ func TestWWW(t *testing.T) {
 	})
 
 	t.Run("Lego::httpreq", func(t *testing.T) {
-		t.SkipNow()
-		err := lego("httpreq", map[string]string{
-			"HTTPREQ_ENDPOINT":            "http://localhost",
-			"HTTPREQ_POLLING_INTERVAL":    "10",
-			"HTTPREQ_PROPAGATION_TIMEOUT": "300",
+		// t.SkipNow()
+		err := lego("httpreq", []string{
+			"HTTPREQ_ENDPOINT=http://localhost",
+			"HTTPREQ_POLLING_INTERVAL=10",
+			"HTTPREQ_PROPAGATION_TIMEOUT=300",
 		})
 		if err != nil {
 			t.Fatal(err)

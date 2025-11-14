@@ -12,7 +12,7 @@ import (
 
 const Domain = "uralhimmash.com"
 
-func lego(provider string, env map[string]string) error {
+func lego(provider string, env []string) error {
 	domain := strings.ToLower(na01.RandomString(7) + "." + provider + "." + Domain)
 
 	cmd := exec.Command("lego", "-a",
@@ -23,12 +23,10 @@ func lego(provider string, env map[string]string) error {
 		"run")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	e := cmd.Environ()
-	env["LEGO_EMAIL"] = "stas@ekb.ru"
-	env["LEGO_SERVER"] = "https://acme-staging-v02.api.letsencrypt.org/directory"
-	for k, v := range env {
-		e = append(e, k+"="+v)
-	}
+	e := append(cmd.Environ(), env...)
+	e = append(e,
+		"LEGO_EMAIL=stas@ekb.ru",
+		"LEGO_SERVER=https://acme-staging-v02.api.letsencrypt.org/directory")
 	cmd.Env = e
 	err := cmd.Run()
 	if err != nil {

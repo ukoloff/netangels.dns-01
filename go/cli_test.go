@@ -40,11 +40,11 @@ func TestCLI(t *testing.T) {
 	})
 
 	t.Run("Lego::exec", func(t *testing.T) {
-		t.SkipNow()
-		err := lego("exec", map[string]string{
-			"EXEC_PATH":                me,
-			"EXEC_POLLING_INTERVAL":    "10",
-			"EXEC_PROPAGATION_TIMEOUT": "300",
+		// t.SkipNow()
+		err := lego("exec", []string{
+			"EXEC_PATH=" + me,
+			"EXEC_POLLING_INTERVAL=10",
+			"EXEC_PROPAGATION_TIMEOUT=300",
 		})
 		if err != nil {
 			t.Fatal(err)
