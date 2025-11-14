@@ -10,27 +10,11 @@ import (
 )
 
 func TestCLI(t *testing.T) {
-	me := exePath()
-	cmd := exec.Command("go", "build", "-C", "main", "-ldflags", "-s -w", "-o", me)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err := cmd.Run()
+	me, err := buildCLI()
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer os.Remove(me)
-
-	t.Run("cli", func(t *testing.T) {
-		// t.SkipNow()
-		err := lego("exec", map[string]string{
-			"EXEC_PATH":                me,
-			"EXEC_POLLING_INTERVAL":    "10",
-			"EXEC_PROPAGATION_TIMEOUT": "300",
-		})
-		if err != nil {
-			t.Fatal(err)
-		}
-	})
 
 	t.Run("www", func(t *testing.T) {
 		cmd := exec.Command(me, "www")
@@ -40,8 +24,22 @@ func TestCLI(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		time.Sleep(108 * time.Millisecond)
 		defer na01.FireQuit()
+		time.Sleep(108 * time.Millisecond)
+
+		FireWebTest()
+	})
+
+	t.Run("Lego/exec", func(t *testing.T) {
+		t.SkipNow()
+		err := lego("exec", map[string]string{
+			"EXEC_PATH":                me,
+			"EXEC_POLLING_INTERVAL":    "10",
+			"EXEC_PROPAGATION_TIMEOUT": "300",
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
 	})
 }
 
@@ -51,4 +49,12 @@ func exePath() string {
 	f.Close()
 	os.Remove(f.Name())
 	return f.Name()
+}
+
+func buildCLI() (string, error) {
+	me := exePath()
+	cmd := exec.Command("go", "build", "-C", "main", "-ldflags", "-s -w", "-o", me)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return me, cmd.Run()
 }
