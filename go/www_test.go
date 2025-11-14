@@ -16,12 +16,14 @@ func TestWWW(t *testing.T) {
 	}()
 	defer na01.StopWWW()
 
-	err := FireWebTest()
-	if err != nil {
-		t.Fatal(err)
-	}
+	t.Run("present+cleanup", func(t *testing.T) {
+		err := FireWebTest()
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
 
-	t.Run("Lego/httpreq", func(t *testing.T) {
+	t.Run("Lego::httpreq", func(t *testing.T) {
 		t.SkipNow()
 		err := lego("httpreq", map[string]string{
 			"HTTPREQ_ENDPOINT":            "http://localhost",

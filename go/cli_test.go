@@ -30,7 +30,11 @@ func TestCLI(t *testing.T) {
 		FireWebTest()
 	})
 
-	t.Run("Lego/exec", func(t *testing.T) {
+	t.Run("exec", func(t *testing.T) {
+		// TODO!!!
+	})
+
+	t.Run("Lego::exec", func(t *testing.T) {
 		t.SkipNow()
 		err := lego("exec", map[string]string{
 			"EXEC_PATH":                me,
