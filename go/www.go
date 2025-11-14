@@ -78,38 +78,33 @@ func FireAlive() error {
 	return nil
 }
 
-func present(w http.ResponseWriter, r *http.Request) {
+func verb(w http.ResponseWriter, r *http.Request, handler func(in acmeReq) (any, error)) {
 	var in acmeReq
 	err := json.NewDecoder(r.Body).Decode(&in)
 	if err != nil {
 		// return err
 	}
-	rr, err := Present(in.FQDN, in.Value)
+	res, err := handler(in)
 	if err != nil {
 		// return err
 	}
-	data, err := json.Marshal(rr)
+	data, err := json.Marshal(res)
 	if err != nil {
 		// return err
 	}
 	w.Write(data)
 }
 
+func present(w http.ResponseWriter, r *http.Request) {
+	verb(w, r, func(in acmeReq) (any, error) {
+		return Present(in.FQDN, in.Value)
+	})
+}
+
 func cleanup(w http.ResponseWriter, r *http.Request) {
-	var in acmeReq
-	err := json.NewDecoder(r.Body).Decode(&in)
-	if err != nil {
-		// return err
-	}
-	rrs, err := CleanUp(in.FQDN, in.Value)
-	if err != nil {
-		// return err
-	}
-	data, err := json.Marshal(rrs)
-	if err != nil {
-		// return err
-	}
-	w.Write(data)
+	verb(w, r, func(in acmeReq) (any, error) {
+		return CleanUp(in.FQDN, in.Value)
+	})
 }
 
 func fire(cmd, fqdn, text string, out any) error {
