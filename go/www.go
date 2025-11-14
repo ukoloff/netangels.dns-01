@@ -1,11 +1,14 @@
 package na01
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -76,15 +79,65 @@ func FireAlive() error {
 }
 
 func present(w http.ResponseWriter, r *http.Request) {
+	var in acmeReq
+	err := json.NewDecoder(r.Body).Decode(&in)
+	if err != nil {
+		// return err
+	}
+	rr, err := Present(in.FQDN, in.Value)
+	if err != nil {
+		// return err
+	}
+	data, err := json.Marshal(rr)
+	if err != nil {
+		// return err
+	}
+	w.Write(data)
 }
 
 func cleanup(w http.ResponseWriter, r *http.Request) {
+	var in acmeReq
+	err := json.NewDecoder(r.Body).Decode(&in)
+	if err != nil {
+		// return err
+	}
+	rrs, err := CleanUp(in.FQDN, in.Value)
+	if err != nil {
+		// return err
+	}
+	data, err := json.Marshal(rrs)
+	if err != nil {
+		// return err
+	}
+	w.Write(data)
 }
 
-func FirePresent(fqdn, text string) error {
+func fire(cmd, fqdn, text string, out any) error {
+	in := acmeReq{FQDN: fqdn, Value: text}
+	data, err := json.Marshal(in)
+	if err != nil {
+		return err
+	}
+	body := bytes.NewBuffer(data)
+	resp, err := http.Post(URL+cmd, "application/json", body)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
+		return errors.New("HTTP Error: " + strconv.Itoa(resp.StatusCode))
+	}
+	err = json.NewDecoder(resp.Body).Decode(out)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func FireCleanUp(fqdn, text string) error {
-	return nil
+func FirePresent(fqdn, text string, out any) error {
+	return fire("present", fqdn, text, out)
+}
+
+func FireCleanUp(fqdn, text string, out any) error {
+	return fire("cleanup", fqdn, text, out)
 }

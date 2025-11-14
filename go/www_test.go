@@ -2,6 +2,7 @@ package na01_test
 
 import (
 	"na01"
+	"strings"
 	"testing"
 	"time"
 )
@@ -27,10 +28,11 @@ func TestWWW(t *testing.T) {
 	}
 	defer na01.DropZone(z.ID)
 
-	fqdn := "acme-" + na01.RandomString(5) + "." + z.Name
+	fqdn := strings.ToLower("acme-" + na01.RandomString(5) + "." + z.Name)
 	text := na01.RandomString(12)
 
-	err = na01.FirePresent(fqdn, text)
+	var rr any
+	err = na01.FirePresent(fqdn, text, &rr)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,7 +48,8 @@ func TestWWW(t *testing.T) {
 		t.Fatal("incorrect RR found")
 	}
 
-	err = na01.FireCleanUp(fqdn, text)
+	var rrz any
+	err = na01.FireCleanUp(fqdn, text, &rrz)
 	if err != nil {
 		t.Fatal(err)
 	}
