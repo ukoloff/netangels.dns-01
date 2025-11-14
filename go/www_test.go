@@ -36,7 +36,7 @@ func TestWWW(t *testing.T) {
 		t.Fatal(err)
 	}
 	if rr.Name != fqdn || rr.Data["value"] != text {
-		t.Fatal("got incorrect RR ")
+		t.Fatal("got incorrect RR")
 	}
 
 	rrs, err := na01.FindRRs(fqdn)
@@ -55,7 +55,7 @@ func TestWWW(t *testing.T) {
 		t.Fatal(err)
 	}
 	if rrs[0].Name != fqdn || rrs[0].Data["value"] != text {
-		t.Fatal("incorrect RR found")
+		t.Fatal("incorrect RR deleted")
 	}
 
 	rrs, err = na01.FindRRs(fqdn)
