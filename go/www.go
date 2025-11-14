@@ -78,19 +78,31 @@ func FireAlive() error {
 	return nil
 }
 
+func sendError(w http.ResponseWriter, err error) {
+	type croak struct {
+		Message string `json:"message"`
+	}
+	w.WriteHeader(http.StatusBadRequest)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(croak{Message: err.Error()})
+}
+
 func verb(w http.ResponseWriter, r *http.Request, handler func(in acmeReq) (any, error)) {
 	var in acmeReq
 	err := json.NewDecoder(r.Body).Decode(&in)
 	if err != nil {
-		// return err
+		sendError(w, err)
+		return
 	}
 	res, err := handler(in)
 	if err != nil {
-		// return err
+		sendError(w, err)
+		return
 	}
 	data, err := json.Marshal(res)
 	if err != nil {
-		// return err
+		sendError(w, err)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(data)
