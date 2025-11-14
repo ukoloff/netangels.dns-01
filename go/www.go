@@ -21,7 +21,7 @@ type acmeReq struct {
 	Value string `json:"value"`
 }
 
-func Start() error {
+func StartWWW() error {
 	http.HandleFunc("/alive", alive)
 	http.HandleFunc("/quit", quit)
 	http.HandleFunc("/present", present)
@@ -34,7 +34,7 @@ func Start() error {
 	return err
 }
 
-func Stop() error {
+func StopWWW() error {
 	return server.Shutdown(context.Background())
 }
 
@@ -50,7 +50,7 @@ func quit(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Bye")
 	go func() {
 		time.Sleep(300 * time.Millisecond)
-		Stop()
+		StopWWW()
 	}()
 }
 

@@ -9,11 +9,11 @@ import (
 
 func TestWWW(t *testing.T) {
 	go func() {
-		if err := na01.Start(); err != nil {
+		if err := na01.StartWWW(); err != nil {
 			panic(err)
 		}
 	}()
-	defer na01.Stop()
+	defer na01.StopWWW()
 
 	time.Sleep(108 * time.Millisecond)
 

@@ -21,7 +21,7 @@ func Cli() {
 	case "cleanup":
 		action = wrapCleanUp
 	case "www":
-		if err := Start(); err != nil {
+		if err := StartWWW(); err != nil {
 			log.Fatal(err)
 		}
 	default:
