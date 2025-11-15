@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -17,6 +18,8 @@ const (
 	API     = "https://api-ms.netangels.ru/api/v1/dns/"
 	ENV_API = "NETANGELS_API_KEY"
 )
+
+var Logging = len(os.Getenv("NETANGELS_LOGGING")) != 0
 
 func Auth() (string, error) {
 	req := url.Values{}
@@ -232,6 +235,9 @@ func cleanDomain(fqdn string) string {
 }
 
 func Present(fqdn, text string) (RR, error) {
+	if Logging {
+		log.Printf("NetAngels++ %v = %v", fqdn, text)
+	}
 	rr := RRtxt{
 		RR: RR{
 			Name: cleanDomain(fqdn),
@@ -243,6 +249,9 @@ func Present(fqdn, text string) (RR, error) {
 }
 
 func CleanUp(fqdn, text string) ([]RR, error) {
+	if Logging {
+		log.Printf("NetAngels-- %v = %v", fqdn, text)
+	}
 	rrs, err := FindRRs(cleanDomain(fqdn))
 	if err != nil {
 		return nil, err

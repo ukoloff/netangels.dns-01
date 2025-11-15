@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -27,6 +28,9 @@ func StartWWW() error {
 	http.HandleFunc("/present", present)
 	http.HandleFunc("/cleanup", cleanup)
 	http.HandleFunc("/", home)
+	if Logging {
+		log.Printf("NetAngels: Starting Web-server")
+	}
 	err := server.ListenAndServe()
 	if err == http.ErrServerClosed {
 		err = nil
@@ -35,6 +39,9 @@ func StartWWW() error {
 }
 
 func StopWWW() error {
+	if Logging {
+		log.Printf("NetAngels: Stopping Web-server")
+	}
 	return server.Shutdown(context.Background())
 }
 
