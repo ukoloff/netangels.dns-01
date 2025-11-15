@@ -1,0 +1,19 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+{
+  "name": "na01.go",
+  "dockerComposeFile": "compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/repo",
+  "onCreateCommand": "apk add git lego",
+  "postCreateCommand": "git clone -b go https://github.com/ukoloff/netangels.dns-01 .",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "mhutchie.git-graph",
+        "EditorConfig.EditorConfig",
+        "fabiospampinato.vscode-open-in-github"
+      ]
+    }
+  }
+}

@@ -1,0 +1,17 @@
+name: na01.go
+
+services:
+  dev:
+    image: ukoloff/golang:dev
+    working_dir: /repo
+    volumes:
+      - repo:/repo
+    command:
+      - sleep
+      - infinity
+    init: true
+    env_file:
+      - ../.env
+
+volumes:
+  repo:

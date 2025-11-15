@@ -1,26 +1,12 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 {
-  "name": "na01",
+  "name": "na01.js",
   "dockerComposeFile": "compose.yml",
   "service": "dev",
   "workspaceFolder": "/repo",
-  "onCreateCommand": {
-    "apk": [
-      "apk",
-      "add",
-      "git",
-      "lego"
-    ]
-  },
+  "onCreateCommand": "apk add git lego",
   "shutdownAction": "none",
-  "postCreateCommand": {
-    "clone": [
-      "git",
-      "clone",
-      "https://github.com/ukoloff/netangels.dns-01",
-      "."
-    ]
-  },
+  "postCreateCommand": "git clone https://github.com/ukoloff/netangels.dns-01 .",
   "customizations": {
     "vscode": {
       "extensions": [
