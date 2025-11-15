@@ -34,7 +34,21 @@ func TestWWW(t *testing.T) {
 			t.Fatal(err)
 		}
 	})
+}
 
+type txtRR struct {
+	fqdn  string
+	value string
+}
+
+func newTxt(z na01.Zone) (result txtRR) {
+	result.fqdn = strings.ToLower("acme-" + na01.RandomString(5) + "." + z.Name)
+	result.value = na01.RandomString(12)
+	return
+}
+
+func (txt txtRR) match(rr na01.RR) bool {
+	return rr.Type == "TXT" && txt.fqdn == rr.Name && txt.value == rr.Data["value"]
 }
 
 func FireWebTest() error {
@@ -51,37 +65,36 @@ func FireWebTest() error {
 	}
 	defer na01.DropZone(z.ID)
 
-	fqdn := strings.ToLower("acme-" + na01.RandomString(5) + "." + z.Name)
-	text := na01.RandomString(12)
+	x := newTxt(z)
 
-	rr, err := na01.FirePresent(fqdn, text)
+	rr, err := na01.FirePresent(x.fqdn, x.value)
 	if err != nil {
 		return err
 	}
-	if rr.Name != fqdn || rr.Data["value"] != text {
+	if !x.match(rr) {
 		return errors.New("got incorrect RR")
 	}
 
-	rrs, err := na01.FindRRs(fqdn)
+	rrs, err := na01.FindRRs(x.fqdn)
 	if err != nil {
 		return err
 	}
 	if len(rrs) != 1 {
 		return errors.New("new RR not found")
 	}
-	if rrs[0].Name != fqdn || rrs[0].Data["value"] != text {
+	if !x.match(rrs[0]) {
 		return errors.New("incorrect RR found")
 	}
 
-	rrs, err = na01.FireCleanUp(fqdn, text)
+	rrs, err = na01.FireCleanUp(x.fqdn, x.value)
 	if err != nil {
 		return err
 	}
-	if rrs[0].Name != fqdn || rrs[0].Data["value"] != text {
+	if len(rrs) != 1 || !x.match(rrs[0]) {
 		return errors.New("incorrect RR deleted")
 	}
 
-	rrs, err = na01.FindRRs(fqdn)
+	rrs, err = na01.FindRRs(x.fqdn)
 	if err != nil {
 		return err
 	}

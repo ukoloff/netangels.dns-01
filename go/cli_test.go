@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 	"testing"
 	"time"
 )
@@ -82,31 +81,30 @@ func execTest(me string) error {
 	}
 	defer na01.DropZone(z.ID)
 
-	fqdn := strings.ToLower("cli-" + na01.RandomString(5) + "." + z.Name)
-	text := na01.RandomString(12)
+	x := newTxt(z)
 
-	err = runMe(me, "present", fqdn, text)
+	err = runMe(me, "present", x.fqdn, x.value)
 	if err != nil {
 		return err
 	}
 
-	rrs, err := na01.FindRRs(fqdn)
+	rrs, err := na01.FindRRs(x.fqdn)
 	if err != nil {
 		return err
 	}
 	if len(rrs) != 1 {
 		return errors.New("new RR not found")
 	}
-	if rrs[0].Name != fqdn || rrs[0].Data["value"] != text {
+	if !x.match(rrs[0]) {
 		return errors.New("incorrect RR found")
 	}
 
-	err = runMe(me, "cleanup", fqdn, text)
+	err = runMe(me, "cleanup", x.fqdn, x.value)
 	if err != nil {
 		return err
 	}
 
-	rrs, err = na01.FindRRs(fqdn)
+	rrs, err = na01.FindRRs(x.fqdn)
 	if err != nil {
 		return err
 	}
