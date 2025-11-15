@@ -22,5 +22,6 @@ target "golang" {
   labels = {
     "org.opencontainers.image.authors" = "Stanislav.Ukolov@omzglobal.com"
     "org.opencontainers.image.description" = "NetAngels DNS-01 helper for Lego Let's Encrypt / ACME client"
+    "org.opencontainers.image.source" = "https://github.com/ukoloff/netangels.dns-01"
   }
 }
