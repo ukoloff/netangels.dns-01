@@ -1,13 +1,29 @@
 # netangels.dns-01
 DNS challenge via NetAngels.ru for go-acme/lego
 
-# .env
+## .env
 ```.env
 # .devcontainer/.env
 NETANGELS_API_KEY=XXX
 DEV_WATCH=1
 ```
-# Время ожидания
+
+## Логирование
+Включается непустым значением переменной
+`NETANGELS_LOGGING`.
+
+NB: изменение её в
+[compose.yml](.devcontainer/go/compose.yml)
+или даже
+[devcontainer.json](.devcontainer/go/devcontainer.json)::containerEnv
+требует перестройки контейнера.
+Динамически
+[можно менять](https://containers.dev/implementors/json_reference/)
+в
+[devcontainer.json](.devcontainer/go/devcontainer.json)::remoteEnv
+
+
+## Время ожидания
 
 Обновление DNS занимает
 (на 22.08.2028):
