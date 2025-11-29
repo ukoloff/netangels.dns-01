@@ -5,7 +5,6 @@
   "service": "dev",
   "workspaceFolder": "/repo",
   "onCreateCommand": "apk add git lego",
-  "postCreateCommand": "git clone -b go https://github.com/ukoloff/netangels.dns-01 .",
   "customizations": {
     "vscode": {
       "extensions": [

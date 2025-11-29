@@ -1,8 +1,11 @@
-name: na01.go
+name: na01-go
 
 services:
   dev:
     image: ukoloff/golang:dev
+    depends_on:
+      sidecar:
+        condition: service_completed_successfully
     working_dir: /repo
     volumes:
       - repo:/repo
@@ -12,6 +15,14 @@ services:
     init: true
     env_file:
       - ../.env
+
+  sidecar:
+    image: ukoloff/sidecar:js
+    volumes:
+      - repo:/repo
+    working_dir: /repo
+    environment:
+      SIDECAR_GIT_URL: https://github.com/ukoloff/netangels.dns-01
 
 volumes:
   repo:
