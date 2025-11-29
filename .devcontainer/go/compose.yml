@@ -22,7 +22,7 @@ services:
       - repo:/repo
     working_dir: /repo
     environment:
-      SIDECAR_GIT_URL: https://github.com/ukoloff/netangels.dns-01
+      SIDECAR_GIT_URL: https://github.com/ukoloff/netangels.dns-01?depth=2#go
 
 volumes:
   repo:
