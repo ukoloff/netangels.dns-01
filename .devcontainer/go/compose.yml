@@ -2,7 +2,7 @@ name: na01-go
 
 services:
   dev:
-    image: ukoloff/golang:dev
+    image: ukoloff/dev:go
     depends_on:
       sidecar:
         condition: service_completed_successfully
