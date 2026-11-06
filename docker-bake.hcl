@@ -12,7 +12,7 @@ target "golang" {
     COPY ./go/. ./go/.
     RUN go build -C go/main -o na01 -ldflags "-s -w"
 
-    FROM gcr.io/distroless/static-debian12
+    FROM gcr.io/distroless/static-debian13
 
     COPY --from=build /repo/go/main/na01 /bin/na01
 
